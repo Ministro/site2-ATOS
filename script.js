@@ -2,6 +2,7 @@
 window.addEventListener('load', () => {
   const preloader = document.getElementById('preloader');
   if (!preloader) return;
+
   setTimeout(() => {
     preloader.classList.add('hidden');
   }, 900);
@@ -9,12 +10,15 @@ window.addEventListener('load', () => {
 
 // ===== HEADER SCROLL =====
 const header = document.getElementById('header');
+
 window.addEventListener('scroll', () => {
+  if (!header) return;
   header.classList.toggle('scrolled', window.scrollY > 40);
 });
 
-// ===== REVEAL ON SCROLL =====
+// ===== REVEAL =====
 const revealEls = document.querySelectorAll('.reveal');
+
 const io = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
@@ -26,92 +30,98 @@ const io = new IntersectionObserver((entries) => {
 
 revealEls.forEach(el => io.observe(el));
 
-// ===== PLAN TABS =====
+// ===== PLANOS =====
 function trocarPlanoTab(target, btn) {
   document.querySelectorAll('.plan-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
 
-  document.getElementById('planos-urbano').style.display = target === 'urbano' ? 'grid' : 'none';
-  document.getElementById('planos-rural').style.display = target === 'rural' ? 'grid' : 'none';
+  const urbano = document.getElementById('planos-urbano');
+  const rural = document.getElementById('planos-rural');
+
+  if (!urbano || !rural) return;
+
+  urbano.style.display = target === 'urbano' ? 'grid' : 'none';
+  rural.style.display = target === 'rural' ? 'grid' : 'none';
 }
 
 // ===== MODAL =====
 function abrirModal() {
   const overlay = document.getElementById('modalCadastro');
+  if (!overlay) return;
+
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
-
-  if (typeof initMapa === 'function') {
-    setTimeout(initMapa, 300);
-  }
 }
 
 function fecharModal() {
-  document.getElementById('modalCadastro').classList.remove('open');
+  const overlay = document.getElementById('modalCadastro');
+  if (!overlay) return;
+
+  overlay.classList.remove('open');
   document.body.style.overflow = '';
 }
 
-document.getElementById('modalCadastro').addEventListener('click', (e) => {
-  if (e.target.id === 'modalCadastro') fecharModal();
-});
+// fechar modal clicando fora
+const modal = document.getElementById('modalCadastro');
+if (modal) {
+  modal.addEventListener('click', (e) => {
+    if (e.target.id === 'modalCadastro') fecharModal();
+  });
+}
 
+// ESC fecha modal
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') fecharModal();
 });
 
 // ======================================================
-// 🚀 SCROLL FRAME ANIMATION (SUBSTITUI O VÍDEO)
+// 🚨 SCROLL FRAMES (VERSÃO SEGURA)
 // ======================================================
 
 (function () {
   const section = document.getElementById('scrollVideoSection');
   const canvas = document.getElementById('scrollCanvas');
-  const ctx = canvas ? canvas.getContext('2d') : null;
-  const cardsPanel = document.getElementById('scrollCardsPanel');
   const overlay = document.getElementById('scrollVideoOverlay');
+  const cardsPanel = document.getElementById('scrollCardsPanel');
 
-  if (!section || !canvas || !ctx) return;
+  if (!section || !canvas) return;
 
-  const TOTAL_FRAMES = 722;
-  const framePath = (i) =>
-    `assets/frames/scroll-video_${String(i).padStart(6, '0')}.png`;
+  const ctx = canvas.getContext('2d');
 
-  const frames = [];
-  let loaded = 0;
+  let currentFrame = 1;
+  const TOTAL_FRAMES = 200; // 👈 reduzido pra evitar crash (ajusta depois)
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  const img = new Image();
 
-  // ===== PRELOAD FRAMES =====
-  for (let i = 1; i <= TOTAL_FRAMES; i++) {
-    const img = new Image();
-    img.src = framePath(i);
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+
+  function getFrame(i) {
+    return `assets/frames/scroll-video_${String(i).padStart(6, '0')}.png`;
+  }
+
+  function draw(frameIndex) {
+    img.src = getFrame(frameIndex);
 
     img.onload = () => {
-      loaded++;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const scale = Math.max(
+        canvas.width / img.width,
+        canvas.height / img.height
+      );
+
+      const x = (canvas.width - img.width * scale) / 2;
+      const y = (canvas.height - img.height * scale) / 2;
+
+      ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
     };
-
-    frames.push(img);
   }
-
-  function drawFrame(index) {
-    const img = frames[index];
-    if (!img || !img.complete) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const scale = Math.max(
-      canvas.width / img.width,
-      canvas.height / img.height
-    );
-
-    const x = (canvas.width - img.width * scale) / 2;
-    const y = (canvas.height - img.height * scale) / 2;
-
-    ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-  }
-
-  let currentFrame = 0;
 
   function clamp(v, min, max) {
     return Math.min(Math.max(v, min), max);
@@ -122,41 +132,32 @@ document.addEventListener('keydown', (e) => {
     const scrollable = section.offsetHeight - window.innerHeight;
 
     if (scrollable > 0) {
-      let progress = clamp((-rect.top) / scrollable, 0, 1);
+      const progress = clamp((-rect.top) / scrollable, 0, 1);
 
-      // converte scroll → frame
-      currentFrame = Math.floor(progress * (TOTAL_FRAMES - 1));
+      const frame = Math.floor(progress * (TOTAL_FRAMES - 1)) + 1;
 
-      drawFrame(currentFrame);
-
-      // ===== CARDS SUBINDO =====
-      const CARDS_START = 0.55;
-      const cardsProgress = clamp((progress - CARDS_START) / (1 - CARDS_START), 0, 1);
-
-      if (cardsPanel) {
-        cardsPanel.style.transform = `translateY(${(1 - cardsProgress) * 100}%)`;
+      if (frame !== currentFrame) {
+        currentFrame = frame;
+        draw(currentFrame);
       }
 
-      const items = cardsPanel
-        ? Array.from(cardsPanel.querySelectorAll('.scroll-card, .btn'))
-        : [];
+      // cards simples (sem quebrar nada)
+      const CARDS_START = 0.6;
+      const p = clamp((progress - CARDS_START) / (1 - CARDS_START), 0, 1);
 
-      items.forEach((el, i) => {
-        const start = i * 0.15;
-        const local = clamp((cardsProgress - start) / (1 - start), 0, 1);
+      if (cardsPanel) {
+        cardsPanel.style.transform = `translateY(${(1 - p) * 100}%)`;
+      }
 
-        el.style.opacity = local;
-        el.style.transform = `translateY(${(1 - local) * 30}px)`;
-      });
-
-      // overlay fade
       if (overlay) {
-        overlay.style.opacity = String(1 - cardsProgress);
+        overlay.style.opacity = String(1 - p);
       }
     }
 
     requestAnimationFrame(loop);
   }
 
+  // frame inicial
+  draw(1);
   requestAnimationFrame(loop);
 })();
