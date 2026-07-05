@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atos Telecom — Internet de alta velocidade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header id="header">
+  <nav class="wrap">
+    <a href="#" class="logo">ATOS<span>.</span></a>
+    <div class="nav-links">
+      <a href="#produto">Produto</a>
+      <a href="#recursos">Recursos</a>
+      <a href="#numeros">Resultados</a>
+      <a href="#planos">Planos</a>
+    </div>
+    <div style="display:flex; gap:14px; align-items:center;">
+      <button class="btn" onclick="abrirModal()">Seja nosso cliente</button>
+      <button class="menu-toggle">☰</button>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-eyebrow eyebrow">Apresentando a Atos Telecom</div>
+  <h1>Internet que <span class="gradient-text">chega</span><br>onde você está</h1>
+  <p class="sub">Fibra de alta velocidade para a cidade e conexão de qualidade para a zona rural. Instalação rápida e suporte de verdade.</p>
+  <div class="hero-ctas">
+    <button class="btn" onclick="abrirModal()">Seja nosso cliente</button>
+    <a href="#planos" class="btn btn-ghost">Ver planos</a>
+  </div>
+
+  <div class="mosaic">
+    <div class="tile"></div>
+    <div class="tile"></div>
+    <div class="tile"></div>
+    <div class="tile"></div>
+    <div class="tile"></div>
+    <div class="mosaic-word">ATOS</div>
+  </div>
+  <div class="badges">
+    <span>★★★★★ 4.9/5 de avaliação</span>
+    <span>Milhares de clientes conectados</span>
+    <span>Suporte local</span>
+  </div>
+</section>
+
+<div class="logo-strip">
+  <div class="wrap">
+    <span>CANDEIAS DO JAMARI</span>
+    <span>PORTO VELHO</span>
+    <span>ZONA RURAL</span>
+    <span>BR 364</span>
+    <span>REGIÃO METROPOLITANA</span>
+  </div>
+</div>
+
+<section id="recursos">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Recursos</div>
+      <h2>Feita para a sua<br>rotina de verdade</h2>
+      <p>Internet estável para trabalhar, estudar e assistir sem travar — na cidade ou no campo.</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon"></div>
+        <h3>Instalação rápida</h3>
+        <p>Agendamos sua instalação assim que o cadastro é aprovado, sem enrolação.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon"></div>
+        <h3>Streaming incluso</h3>
+        <p>Planos com Disney+ e HBO Max grátis ou com desconto, direto na fatura.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon"></div>
+        <h3>Cobertura rural</h3>
+        <p>Levamos conexão estável até localidades que outras operadoras não alcançam.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon"></div>
+        <h3>Sem burocracia</h3>
+        <p>Cadastro simples, online, com ou sem fidelidade — você escolhe.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon"></div>
+        <h3>Pagamento flexível</h3>
+        <p>Instalação à vista ou parcelada, dependendo da sua localidade.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon"></div>
+        <h3>Suporte de verdade</h3>
+        <p>Time local pronto pra resolver, sem robô te enrolando no chat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="produto">
+  <div class="wrap">
+    <div class="cinematic reveal">
+      <div>
+        <div class="eyebrow">Como funciona</div>
+        <h2>Cadastre-se em minutos.<br>Conecte-se em dias.</h2>
+        <p>Escolha sua localidade, veja o plano disponível pra sua região, marque sua localização no mapa e pronto — nossa equipe entra em contato pra agendar a instalação.</p>
+        <button class="btn" style="margin-top:28px;" onclick="abrirModal()">Seja nosso cliente</button>
+      </div>
+      <div class="cinematic-visual"></div>
+    </div>
+  </div>
+</section>
+
+<section id="numeros">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Resultados</div>
+      <h2>Números que falam<br>por si só</h2>
+    </div>
+    <div class="stats">
+      <div class="reveal"><div class="stat-num gradient-text">20+</div><div class="stat-label">localidades atendidas</div></div>
+      <div class="reveal"><div class="stat-num gradient-text">1GB</div><div class="stat-label">velocidade máxima disponível</div></div>
+      <div class="reveal"><div class="stat-num gradient-text">4.9/5</div><div class="stat-label">satisfação média</div></div>
+      <div class="reveal"><div class="stat-num gradient-text">100%</div><div class="stat-label">suporte local</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="planos">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Planos</div>
+      <h2>Internet rápida<br>pra onde você estiver</h2>
+      <div class="plan-tabs">
+        <button class="plan-tab active" data-target="urbano" onclick="trocarPlanoTab('urbano', this)">Planos Urbanos</button>
+        <button class="plan-tab" data-target="rural" onclick="trocarPlanoTab('rural', this)">Planos Rurais</button>
+      </div>
+    </div>
+
+    <div class="pricing-grid" id="planos-urbano">
+      <div class="price-card reveal">
+        <h3>500MB</h3>
+        <div class="price-amount" style="font-size:20px;">Ideal para uso do dia a dia</div>
+        <ul class="price-list">
+          <li>Streaming em HD</li>
+          <li>Redes sociais e videochamadas</li>
+          <li>Bom para 2-3 dispositivos</li>
+        </ul>
+        <button class="btn btn-ghost" onclick="abrirModal()">Seja nosso cliente</button>
+      </div>
+      <div class="price-card featured reveal">
+        <h3>700MB</h3>
+        <div class="price-amount" style="font-size:20px;">Ideal para home office</div>
+        <ul class="price-list">
+          <li>Streaming em 4K</li>
+          <li>Videochamadas sem travar</li>
+          <li>Vários dispositivos ao mesmo tempo</li>
+          <li>1 assinatura de streaming grátis</li>
+        </ul>
+        <button class="btn" onclick="abrirModal()">Seja nosso cliente</button>
+      </div>
+      <div class="price-card reveal">
+        <h3>1GB</h3>
+        <div class="price-amount" style="font-size:20px;">Ideal para famílias e gamers</div>
+        <ul class="price-list">
+          <li>Máxima velocidade disponível</li>
+          <li>Perfeito para jogos online</li>
+          <li>Disney+ e HBO Max grátis</li>
+        </ul>
+        <button class="btn btn-ghost" onclick="abrirModal()">Seja nosso cliente</button>
+      </div>
+    </div>
+
+    <div class="pricing-grid" id="planos-rural" style="display:none;">
+      <div class="price-card reveal">
+        <h3>200MB</h3>
+        <div class="price-amount" style="font-size:20px;">Ideal para uso básico</div>
+        <ul class="price-list">
+          <li>Navegação e redes sociais</li>
+          <li>Streaming em HD</li>
+          <li>Bom para 1-2 dispositivos</li>
+        </ul>
+        <button class="btn btn-ghost" onclick="abrirModal()">Seja nosso cliente</button>
+      </div>
+      <div class="price-card featured reveal">
+        <h3>300MB</h3>
+        <div class="price-amount" style="font-size:20px;">Ideal para a família toda</div>
+        <ul class="price-list">
+          <li>Streaming em HD/4K</li>
+          <li>Videochamadas sem travar</li>
+          <li>Vários dispositivos ao mesmo tempo</li>
+        </ul>
+        <button class="btn" onclick="abrirModal()">Seja nosso cliente</button>
+      </div>
+      <div class="price-card reveal">
+        <h3>400MB</h3>
+        <div class="price-amount" style="font-size:20px;">Ideal para quem exige mais</div>
+        <ul class="price-list">
+          <li>Máxima velocidade na zona rural</li>
+          <li>Ótimo para home office</li>
+          <li>Vários dispositivos e streaming 4K</li>
+        </ul>
+        <button class="btn btn-ghost" onclick="abrirModal()">Seja nosso cliente</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="cta-band reveal">
+      <h2>Pronto para ter a<br>melhor internet?</h2>
+      <p>Faça seu cadastro agora e nossa equipe entra em contato para agendar a instalação.</p>
+      <button class="btn" onclick="abrirModal()">Seja nosso cliente</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a href="#" class="logo">ATOS<span>.</span></a>
+        <p style="color:var(--text-muted); font-size:14px; margin-top:16px; max-width:260px;">Internet de alta velocidade para a cidade e para o campo.</p>
+      </div>
+      <div>
+        <h4>Produto</h4>
+        <a href="#recursos">Recursos</a>
+        <a href="#produto">Como funciona</a>
+        <a href="#planos">Planos</a>
+      </div>
+      <div>
+        <h4>Empresa</h4>
+        <a href="https://atostelecom.com.br/" target="_blank" rel="noopener noreferrer">Site institucional</a>
+        <a href="#">Sobre nós</a>
+        <a href="#">Contato</a>
+      </div>
+      <div>
+        <h4>Contato</h4>
+        <a href="mailto:contato@atostelecom.com.br">contato@atostelecom.com.br</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Atos Comercio e Empreendimentos de Informatica LTDA ME. Todos os direitos reservados.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ MODAL DE CADASTRO ============ -->
+<div class="modal-overlay" id="modalCadastro">
+  <div class="modal-card">
+    <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">✕</button>
+
+    <div class="modal-header">
+      <img src="https://i.supaimg.com/5ae087fd-c178-4a80-8cea-9076f1946b7e.png" alt="Logo Atos Telecom">
+      <h2>Assinar <span class="gradient-text">Plano</span></h2>
+      <p>Preencha seus dados e nossa equipe entra em contato para agendar a instalação.</p>
+    </div>
+
+    <form id="cadastroForm" autocomplete="off">
+      <div class="linha-campos tres-campos">
+        <div style="flex: 1">
+          <label for="tipoPessoa">Tipo de cadastro</label>
+          <select id="tipoPessoa" name="tipoPessoa" required>
+            <option value="CPF">CPF</option>
+            <option value="CNPJ">CNPJ</option>
+          </select>
+        </div>
+        <div style="flex: 3">
+          <label for="nome" id="nomeLabel">Nome completo</label>
+          <input type="text" id="nome" name="nome" required />
+        </div>
+        <div>
+          <label for="cpf" id="documentoLabel">CPF</label>
+          <input type="text" id="cpf" name="cpf" maxlength="14" required placeholder="000.000.000-00" />
+          <span id="cpfErro" style="color:#ef4444; font-size:13px; display:none">CPF inválido</span>
+        </div>
+        <div style="flex: 1" id="rgContainer">
+          <label for="rg">RG</label>
+          <input type="text" id="rg" name="rg" required />
+        </div>
+      </div>
+
+      <div id="camposEmpresa" style="display: none">
+        <div class="linha-campos">
+          <div style="flex: 2">
+            <label for="nomeFantasia">Nome fantasia</label>
+            <input type="text" id="nomeFantasia" name="nomeFantasia" />
+          </div>
+          <div style="flex: 2">
+            <label for="razaoSocial">Razão social</label>
+            <input type="text" id="razaoSocial" name="razaoSocial" />
+          </div>
+        </div>
+        <div class="linha-campos">
+          <div style="flex: 2">
+            <label for="inscricaoEstadual">Inscrição estadual</label>
+            <input type="text" id="inscricaoEstadual" name="inscricaoEstadual" />
+          </div>
+          <div style="flex: 2">
+            <label for="dataFundacao">Data da fundação</label>
+            <input type="text" id="dataFundacao" name="dataFundacao" maxlength="10" placeholder="dd/mm/aaaa" />
+          </div>
+        </div>
+      </div>
+
+      <div class="linha-campos" id="dadosPessoaFisica">
+        <div style="flex: 2">
+          <label for="nascimento">Data de nascimento</label>
+          <input type="text" id="nascimento" name="nascimento" maxlength="10" required placeholder="dd/mm/aaaa" />
+        </div>
+        <div style="flex: 2">
+          <label for="genero">Gênero</label>
+          <select id="genero" name="genero" required>
+            <option value="">Selecione</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="linha-campos" id="filiacaoContainer">
+        <div style="flex: 2">
+          <label for="Filiacaomae">Filiação Mãe</label>
+          <input type="text" id="Filiacaomae" name="Filiacaomae" required />
+        </div>
+        <div style="flex: 2">
+          <label for="Filiacaopai">Filiação Pai</label>
+          <input type="text" id="Filiacaopai" name="Filiacaopai" required />
+        </div>
+      </div>
+
+      <div class="linha-campos tres-campos">
+        <div style="flex: 2">
+          <label for="endereco">Endereço</label>
+          <input type="text" id="endereco" name="endereco" required />
+        </div>
+        <div>
+          <label for="bairro">Bairro</label>
+          <input type="text" id="bairro" name="bairro" required />
+        </div>
+        <div>
+          <label for="numero">Número da residência</label>
+          <input type="text" id="numero" name="numero" required />
+        </div>
+      </div>
+
+      <div class="linha-campos">
+        <div style="flex: 2">
+          <label for="referencia">Referência</label>
+          <input type="text" id="referencia" name="referencia" required />
+        </div>
+        <div style="flex: 2">
+          <label for="moradia">Tipo de Moradia</label>
+          <select id="moradia" name="moradia" required>
+            <option value="">Selecione</option>
+            <option value="Propria">Própria</option>
+            <option value="Alugado">Alugada</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="linha-campos">
+        <div style="flex: 2">
+          <label for="email">E-mail</label>
+          <input type="text" id="email" name="email" />
+        </div>
+        <div style="flex: 2">
+          <label for="whatsapp">Número do WhatsApp</label>
+          <input type="text" id="whatsapp" name="whatsapp" maxlength="15" placeholder="(00) 90000-0000" required />
+        </div>
+      </div>
+
+      <label for="local">Localidade</label>
+      <select id="local" name="local" required>
+        <option value="">Selecione a localidade</option>
+        <option value="Candeias">Candeias do Jamari</option>
+        <option value="Setor chacareiro Cemitério/Candeias">Setor chacareiro Após Cemitério</option>
+        <option value="Setor chacareiro Antes do Cemitério">Setor chacareiro Antes do Cemitério</option>
+        <option value="Green-PK">Green-PK</option>
+        <option value="Pamus">Pamus</option>
+        <option value="55A">55A</option>
+        <option value="55B">55B</option>
+        <option value="BR 364-Cuiba">BR 364-Cuiba</option>
+        <option value="BR 364-PVH">BR 364-PVH</option>
+        <option value="Rancho Alegre">Rancho Alegre</option>
+        <option value="BR 364 (Cuiabá,Após o Silos)">BR 364 (Cuiabá,Após o Silos)</option>
+        <option value="BR 364 KM 50 (Cinquentinha)">BR 364 KM 50 (Cinquentinha)</option>
+        <option value="Corpo Dourado">Corpo Dourado</option>
+        <option value="Santa Luzia">Santa Luzia</option>
+        <option value="Setor Industrial PVH">Setor Industrial PVH</option>
+        <option value="Bacia Leiteira Bom Jesus">Bacia Leiteira Bom Jesus</option>
+        <option value="Bacia Leiteira Ramal do Boto">Bacia Leiteira Principal/Ramal do Boto</option>
+        <option value="Bacia Leiteira Ramal da Fortuna">Bacia Leiteira Ramal da Fortuna</option>
+        <option value="Bairro 13/ Castanheiras">Bairro 13/ Castanheiras</option>
+        <option value="Piquiá">3 Piquiás</option>
+        <option value="Bairro Novo de Candeias">Bairro Novo de Candeias</option>
+        <option value="Linha do Caju">Linha do Caju</option>
+      </select>
+
+      <div id="tipoPlanoContainer">
+        <label for="tipoPlano">Tipo de Plano</label>
+        <select id="tipoPlano" name="tipoPlano">
+          <option value="">Selecione</option>
+          <option value="Com Fidelidade">Com Fidelidade</option>
+          <option value="Sem Fidelidade">Sem Fidelidade</option>
+        </select>
+      </div>
+
+      <div id="instalacaoContainer" style="display: none; margin-top: 15px">
+        <label>Valor da Instalação</label>
+        <input type="text" id="valorInstalacao" name="valorInstalacao" readonly />
+        <label for="pagamentoInstalacao">Pagamento da Instalação</label>
+        <select id="pagamentoInstalacao" name="pagamentoInstalacao">
+          <option value="">Selecione</option>
+          <option value="Dinheiro">Dinheiro</option>
+          <option value="PIX">PIX</option>
+          <option value="Cartão">Cartão</option>
+        </select>
+        <div id="parcelamentoContainer" style="display: none; margin-top: 10px">
+          <label><input type="checkbox" id="instalacaoVista" name="instalacaoForma" value="À vista" /> À vista</label>
+          <label style="margin-left: 20px"><input type="checkbox" id="instalacaoParcelado" name="instalacaoForma" value="Parcelado" /> Parcelado</label>
+        </div>
+      </div>
+
+      <label for="plano">Plano</label>
+      <select id="plano" name="plano" required>
+        <option value="">Selecione o plano</option>
+      </select>
+
+      <p id="mensagemPlano"></p>
+
+      <div id="turboContainer">
+        <label for="turboPlano">Turbinar Plano (adicionais de streaming)</label>
+        <div class="turbo-grid" id="turboGrid"></div>
+        <div class="turbo-total" id="turboTotal">Total turbinar: R$ 0,00</div>
+        <input type="hidden" id="turboSelecionados" name="turboSelecionados" value="" />
+        <input type="hidden" id="turboTotalValue" name="turboTotalValue" value="0" />
+      </div>
+
+      <label for="indicacao">Indicação</label>
+      <select id="indicacao" name="indicacao" required>
+        <option value="">Selecione</option>
+        <option value="Sem Indicação">Sem Indicação</option>
+      </select>
+
+      <label for="vencimento">Dia do Vencimento</label>
+      <select id="vencimento" name="vencimento" required>
+        <option value="">Selecione</option>
+        <option value="05">05</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="25">25</option>
+      </select>
+
+      <input type="hidden" id="latitude" name="latitude" />
+      <input type="hidden" id="longitude" name="longitude" />
+
+      <div id="info-instalacao"></div>
+      <div id="mapa"></div>
+      <div id="resumoMensalidade"></div>
+
+      <button type="submit" id="submitBtn">Enviar Cadastro</button>
+    </form>
+
+    <p class="form-footnote">© 2026 Atos Comercio e Empreendimentos de Informatica LTDA ME — Todos os direitos reservados</p>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+<script src="script.js"></script>
+<script src="form.js"></script>
+</body>
+</html>
