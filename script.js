@@ -41,32 +41,49 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') fecharModal();
 });
 
-// ===== VÍDEO CONTROLADO PELO SCROLL =====
-// Quando o usuário rola pra baixo o vídeo avança; quando rola pra cima, ele volta.
+// ===== VÍDEO CONTROLADO PELO SCROLL + CARDS SUBINDO POR CIMA =====
+// Nos primeiros 60% do scroll da seção, o vídeo avança/rebobina.
+// Nos 40% finais, um painel de cards sobe por cima do vídeo (que fica parado no fim).
 (function () {
   const video = document.getElementById('scrollVideo');
   const section = document.getElementById('scrollVideoSection');
+  const cardsPanel = document.getElementById('scrollCardsPanel');
+  const overlay = document.getElementById('scrollVideoOverlay');
   if (!video || !section) return;
+
+  const VIDEO_PHASE_END = 0.6; // % do scroll dedicado a avançar o vídeo
+  const CARDS_PHASE_START = 0.55; // começa um pouco antes, pra transição ficar suave
 
   let ticking = false;
 
   function renderScrollVideo() {
     ticking = false;
     const duration = video.duration;
-    if (!duration || isNaN(duration)) return;
 
     const rect = section.getBoundingClientRect();
     const scrollableDistance = section.offsetHeight - window.innerHeight;
     if (scrollableDistance <= 0) return;
 
-    // quanto o usuário já rolou dentro da seção (0 a 1)
     let progress = (-rect.top) / scrollableDistance;
     progress = Math.min(Math.max(progress, 0), 1);
 
-    // seta o tempo do vídeo direto (isso cria o efeito de avançar/rebobinar)
-    const targetTime = progress * duration;
-    if (Math.abs(video.currentTime - targetTime) > 0.02) {
-      video.currentTime = targetTime;
+    // fase do vídeo
+    if (duration && !isNaN(duration)) {
+      const videoProgress = Math.min(progress / VIDEO_PHASE_END, 1);
+      const targetTime = videoProgress * duration;
+      if (Math.abs(video.currentTime - targetTime) > 0.02) {
+        video.currentTime = targetTime;
+      }
+    }
+
+    // fase dos cards subindo por cima
+    if (cardsPanel) {
+      const cardsProgress = Math.min(Math.max((progress - CARDS_PHASE_START) / (1 - CARDS_PHASE_START), 0), 1);
+      cardsPanel.style.transform = `translateY(${(1 - cardsProgress) * 100}%)`;
+    }
+    if (overlay) {
+      const overlayFade = Math.min(Math.max((progress - CARDS_PHASE_START) / 0.2, 0), 1);
+      overlay.style.opacity = String(1 - overlayFade);
     }
   }
 
