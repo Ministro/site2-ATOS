@@ -55,8 +55,6 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 .logo-img{
   height:36px; width:auto; max-width:160px;
   display:block; object-fit:contain;
-  background:#ffffff; border-radius:8px;
-  padding:4px 8px;
 }
 .nav-links{display:flex; gap:36px; font-size:14px; font-weight:600;}
 .nav-links a{color:var(--text-muted); transition:color .2s;}
@@ -144,7 +142,7 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 /* SCROLL VIDEO */
 .scroll-video-section{
   position:relative;
-  height:400vh; /* quanto maior, mais "devagar" o vídeo avança por scroll */
+  height:340vh; /* mais alto = video + cards têm mais "tempo" de scroll cada um */
 }
 .scroll-video-sticky{
   position:sticky;
@@ -154,6 +152,7 @@ nav{display:flex; align-items:center; justify-content:space-between;}
   background:var(--bg-deep);
 }
 .scroll-video-sticky video{
+  position:absolute; inset:0;
   width:100%; height:100%;
   object-fit:cover;
   display:block;
@@ -163,12 +162,35 @@ nav{display:flex; align-items:center; justify-content:space-between;}
   display:flex; flex-direction:column; justify-content:flex-end;
   padding:80px;
   background:linear-gradient(to top, rgba(11,10,20,0.85), transparent 55%);
+  transition:opacity .2s linear;
 }
 .scroll-video-overlay h2{font-size:clamp(28px,4.5vw,52px); max-width:640px; margin-top:14px;}
 .scroll-video-overlay p{color:var(--text-muted); margin-top:14px; font-size:14px;}
+
+/* painel que "sobe" por cima do vídeo fixo */
+.scroll-cards-panel{
+  position:absolute; left:0; right:0; bottom:0;
+  padding:60px 80px 70px;
+  background:linear-gradient(to top, rgba(11,10,20,0.97) 40%, rgba(11,10,20,0.85) 80%, transparent);
+  display:flex; align-items:flex-end; gap:24px; flex-wrap:wrap;
+  transform:translateY(100%);
+  will-change:transform;
+}
+.scroll-card{
+  background:var(--bg-panel);
+  border:1px solid var(--border-soft);
+  border-radius:16px;
+  padding:26px;
+  flex:1; min-width:220px;
+}
+.scroll-card h3{font-family:'Inter',sans-serif; font-weight:700; font-size:17px; text-transform:none; margin-bottom:8px;}
+.scroll-card p{color:var(--text-muted); font-size:14px; line-height:1.5;}
+.scroll-cards-panel .btn{flex-shrink:0;}
+
 @media(max-width:900px){
-  .scroll-video-section{height:250vh;}
+  .scroll-video-section{height:280vh;}
   .scroll-video-overlay{padding:32px;}
+  .scroll-cards-panel{padding:24px; flex-direction:column; align-items:stretch;}
 }
 
 /* LOGO STRIP */
