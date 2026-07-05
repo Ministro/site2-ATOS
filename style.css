@@ -1,192 +1,242 @@
-// ===== PRELOADER =====
-window.addEventListener('load', () => {
-  const preloader = document.getElementById('preloader');
-  if (!preloader) return;
-
-  setTimeout(() => {
-    preloader.classList.add('hidden');
-  }, 900);
-});
-
-// ===== HEADER SCROLL =====
-const header = document.getElementById('header');
-
-window.addEventListener('scroll', () => {
-  if (!header) return;
-  header.classList.toggle('scrolled', window.scrollY > 40);
-});
-
-// ===== REVEAL ON SCROLL =====
-const revealEls = document.querySelectorAll('.reveal');
-
-const io = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('visible');
-      io.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.15 });
-
-revealEls.forEach(el => io.observe(el));
-
-// ===== PLAN TABS =====
-function trocarPlanoTab(target, btn) {
-  document.querySelectorAll('.plan-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-
-  const urbano = document.getElementById('planos-urbano');
-  const rural = document.getElementById('planos-rural');
-
-  if (urbano && rural) {
-    urbano.style.display = target === 'urbano' ? 'grid' : 'none';
-    rural.style.display = target === 'rural' ? 'grid' : 'none';
-  }
+/* ============ PRELOADER ============ */
+.preloader{
+  position:fixed; inset:0; z-index:3000;
+  background:var(--bg-deep);
+  display:flex; align-items:center; justify-content:center;
+  transition:opacity .6s ease, visibility .6s ease;
+}
+.preloader.hidden{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+.preloader-logo{
+  height:56px;
+  opacity:0;
+  animation:preloaderLogoIn 1.1s cubic-bezier(.2,.8,.3,1) forwards,
+            preloaderPulse 1.6s ease-in-out infinite 1.1s;
+}
+@keyframes preloaderLogoIn{
+  0%{opacity:0; transform:scale(0.75);}
+  60%{opacity:1; transform:scale(1.06);}
+  100%{opacity:1; transform:scale(1);}
+}
+@keyframes preloaderPulse{
+  0%,100%{opacity:1;}
+  50%{opacity:0.6;}
 }
 
-// ===== MODAL =====
-function abrirModal() {
-  const overlay = document.getElementById('modalCadastro');
-  if (!overlay) return;
-
-  overlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
-
-  if (typeof initMapa === 'function') {
-    setTimeout(initMapa, 300);
-  }
+/* ============ ENTRADA DO HERO ============ */
+.hero-in{
+  opacity:0;
+  transform:translateY(28px);
+  animation:heroFadeUp .8s cubic-bezier(.2,.8,.2,1) forwards;
+}
+.hero-in-1{animation-delay:1.3s;}
+.hero-in-2{animation-delay:1.45s;}
+.hero-in-3{animation-delay:1.6s;}
+.hero-in-4{animation-delay:1.75s;}
+.hero-in-5{animation-delay:1.9s;}
+@keyframes heroFadeUp{
+  to{opacity:1; transform:translateY(0);}
 }
 
-function fecharModal() {
-  const overlay = document.getElementById('modalCadastro');
-  if (!overlay) return;
-
-  overlay.classList.remove('open');
-  document.body.style.overflow = '';
+:root{
+  --bg-deep:#0B0A14;
+  --bg-panel:#14121F;
+  --bg-panel-2:#1B1830;
+  --accent-magenta:#E94584;
+  --accent-orange:#FF8A5B;
+  --accent-violet:#7B5CFF;
+  --text-light:#F5F3FF;
+  --text-muted:#9C96B5;
+  --border-soft:rgba(245,243,255,0.09);
 }
 
-const modal = document.getElementById('modalCadastro');
-if (modal) {
-  modal.addEventListener('click', (e) => {
-    if (e.target.id === 'modalCadastro') fecharModal();
-  });
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg-deep);
+  color:var(--text-light);
+  font-family:'Inter',sans-serif;
+  overflow-x:hidden;
 }
 
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') fecharModal();
-});
+a{text-decoration:none;color:inherit;}
+.wrap{max-width:1240px;margin:0 auto;padding:0 32px;}
 
-// ======================================================
-// 🚀 SCROLL FRAME ANIMATION (CANVAS)
-// ======================================================
+/* TEXTOS */
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--accent-orange);
+  font-weight:600;
+}
 
-(function () {
-  const section = document.getElementById('scrollVideoSection');
-  const canvas = document.getElementById('scrollCanvas');
-  const overlay = document.getElementById('scrollVideoOverlay');
-  const cardsPanel = document.getElementById('scrollCardsPanel');
+h1,h2,h3{
+  font-family:'Anton',sans-serif;
+  font-weight:400;
+  letter-spacing:0.01em;
+  line-height:1.02;
+  text-transform:uppercase;
+}
 
-  if (!section || !canvas) return;
+.gradient-text{
+  background:linear-gradient(100deg,var(--accent-magenta),var(--accent-orange) 55%,var(--accent-violet));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
 
-  const ctx = canvas.getContext('2d');
+/* NAV */
+header{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:linear-gradient(to bottom, rgba(11,10,20,0.9), rgba(11,10,20,0));
+  padding:22px 0;
+  transition:background .3s ease;
+}
+header.scrolled{
+  background:rgba(11,10,20,0.92);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border-soft);
+}
 
-  const TOTAL_FRAMES = 722;
+nav{display:flex; align-items:center; justify-content:space-between;}
 
-  const framePath = (i) =>
-    `assets/frames/scroll-video_${String(i).padStart(6, '0')}.png`;
+.logo-img{
+  height:36px;
+  width:auto;
+  display:block;
+  object-fit:contain;
+}
 
-  const frames = new Array(TOTAL_FRAMES);
+.nav-links{display:flex; gap:36px; font-size:14px; font-weight:600;}
+.nav-links a{color:var(--text-muted);}
+.nav-links a:hover{color:var(--text-light);}
 
-  let loaded = 0;
-  let currentFrame = 0;
-  let ready = false;
+/* BOTÕES */
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:13px 26px; border-radius:100px;
+  font-weight:700; font-size:14px;
+  background:linear-gradient(100deg,var(--accent-magenta),var(--accent-orange));
+  color:#140A10;
+  border:none;
+  cursor:pointer;
+}
 
-  // ===== CANVAS RESIZE =====
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
+.btn-ghost{
+  background:transparent;
+  border:1px solid var(--border-soft);
+  color:var(--text-light);
+}
 
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:160px 32px 100px;
+  position:relative;
+}
 
-  // ===== PRELOAD FRAMES =====
-  for (let i = 0; i < TOTAL_FRAMES; i++) {
-    const img = new Image();
-    img.src = framePath(i + 1);
+/* ================================
+   SCROLL FRAME SECTION (FIX)
+================================ */
 
-    img.onload = () => {
-      loaded++;
-      if (loaded === 1) {
-        ready = true;
-        drawFrame(0); // render inicial
-      }
-    };
+.scroll-video-section{
+  position:relative;
+  height:340vh;
+}
 
-    frames[i] = img;
-  }
+.scroll-video-sticky{
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow:hidden;
+  background:var(--bg-deep);
+}
 
-  function drawFrame(index) {
-    const img = frames[index];
-    if (!img || !img.complete || !ctx) return;
+/* 🔥 CANVAS AGORA FUNCIONA COMO VÍDEO */
+#scrollCanvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  z-index:1;
+}
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+/* overlay em cima do canvas */
+.scroll-video-overlay{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:80px;
+  background:linear-gradient(to top, rgba(11,10,20,0.85), transparent 55%);
+}
 
-    const scale = Math.max(
-      canvas.width / img.width,
-      canvas.height / img.height
-    );
+/* cards acima de tudo */
+.scroll-cards-panel{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:3;
 
-    const x = (canvas.width - img.width * scale) / 2;
-    const y = (canvas.height - img.height * scale) / 2;
+  padding:60px 80px 70px;
+  background:linear-gradient(to top, rgba(11,10,20,0.97) 40%, rgba(11,10,20,0.85) 80%, transparent);
 
-    ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-  }
+  display:flex;
+  align-items:flex-end;
+  gap:24px;
+  flex-wrap:wrap;
 
-  function clamp(v, min, max) {
-    return Math.min(Math.max(v, min), max);
-  }
+  transform:translateY(100%);
+}
 
-  function loop() {
-    const rect = section.getBoundingClientRect();
-    const scrollable = section.offsetHeight - window.innerHeight;
+.scroll-card{
+  background:var(--bg-panel);
+  border:1px solid var(--border-soft);
+  border-radius:16px;
+  padding:26px;
+  flex:1;
+  min-width:220px;
 
-    if (scrollable > 0 && ready) {
-      let progress = clamp((-rect.top) / scrollable, 0, 1);
+  opacity:0;
+  transform:translateY(30px);
+}
 
-      // frame mapping
-      currentFrame = Math.floor(progress * (TOTAL_FRAMES - 1));
-      drawFrame(currentFrame);
+.scroll-cards-panel .btn{
+  opacity:0;
+  transform:translateY(30px);
+}
 
-      // ===== CARDS =====
-      const CARDS_START = 0.55;
-      const cardsProgress = clamp(
-        (progress - CARDS_START) / (1 - CARDS_START),
-        0,
-        1
-      );
+/* ================================
+   RESTANTE (mantido)
+================================ */
 
-      if (cardsPanel) {
-        cardsPanel.style.transform = `translateY(${(1 - cardsProgress) * 100}%)`;
+section{padding:120px 0;}
+.reveal{opacity:0; transform:translateY(24px); transition:.7s;}
+.reveal.visible{opacity:1; transform:none;}
 
-        const items = cardsPanel.querySelectorAll('.scroll-card, .btn');
+.feature-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
 
-        items.forEach((el, i) => {
-          const start = i * 0.15;
-          const local = clamp((cardsProgress - start) / (1 - start), 0, 1);
+footer{
+  border-top:1px solid var(--border-soft);
+  padding:70px 0 40px;
+}
 
-          el.style.opacity = local;
-          el.style.transform = `translateY(${(1 - local) * 30}px)`;
-        });
-      }
-
-      if (overlay) {
-        overlay.style.opacity = String(1 - cardsProgress);
-      }
-    }
-
-    requestAnimationFrame(loop);
-  }
-
-  requestAnimationFrame(loop);
-})();
+@media(max-width:900px){
+  .scroll-video-section{height:280vh;}
+  .scroll-video-overlay{padding:32px;}
+  .scroll-cards-panel{padding:24px; flex-direction:column;}
+}
