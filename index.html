@@ -13,6 +13,7 @@
 
 <div class="preloader" id="preloader">
   <img src="https://i.supaimg.com/12820c3b-da0c-4cbf-86c0-12ae6f6217c6.png" alt="Atos Telecom" class="preloader-logo">
+  <div class="preloader-progress" id="preloaderProgress"></div>
 </div>
 
 <header id="header">
@@ -56,11 +57,10 @@
 </section>
 
 <!-- ============ VÍDEO CONTROLADO PELO SCROLL ============ -->
-<!-- Coloque seu arquivo de vídeo na raiz do projeto com o nome "scroll-video.mp4" -->
-<!-- (ou troque o "src" abaixo pelo nome do seu arquivo) -->
+<!-- Sequência de imagens em assets/frames/ (scroll-video_000001.png ... 000722.png) -->
 <section class="scroll-video-section" id="scrollVideoSection">
   <div class="scroll-video-sticky">
-    <video id="scrollVideo" src="scroll-video.mp4" muted playsinline preload="auto"></video>
+    <canvas id="scrollCanvas"></canvas>
 
     <div class="scroll-video-overlay" id="scrollVideoOverlay">
       <div class="eyebrow">Nossa cobertura</div>
