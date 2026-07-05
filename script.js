@@ -41,7 +41,8 @@ window.addEventListener('load', () => {
 setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
 
 // ===== SEQUÊNCIA DE IMAGENS CONTROLADA PELO SCROLL + CARDS SUBINDO POR CIMA =====
-// Os frames ficam em assets/frames/scroll-video_000001.png até scroll-video_000722.png
+// Os frames ficam em assets/frames/scroll-video_000001.webp até scroll-video_0000XX.webp
+// >>> AJUSTE ESSE NÚMERO para a quantidade real de frames que você gerar <<<
 (function () {
   const canvas = document.getElementById('scrollCanvas');
   const section = document.getElementById('scrollVideoSection');
@@ -50,11 +51,12 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
   if (!canvas || !section) return;
   const ctx = canvas.getContext('2d');
 
-  const FRAME_COUNT = 722;
-  const FRAME_PATH = (i) => `assets/frames/scroll-video_${String(i).padStart(6, '0')}.png`;
-  const MIN_FRAMES_BEFORE_READY = Math.min(40, FRAME_COUNT);
+  const FRAME_COUNT = 120; // <-- troque para o número de frames que você gerar
+  const FRAME_PATH = (i) => `assets/frames/scroll-video_${String(i).padStart(6, '0')}.webp`;
+  const PREFETCH_RADIUS = 12; // quantos frames pra frente/trás ficam sempre pré-carregados
 
-  const images = new Array(FRAME_COUNT);
+  const images = new Array(FRAME_COUNT).fill(null);
+  const requested = new Array(FRAME_COUNT).fill(false);
   let loadedCount = 0;
 
   function updateProgressText() {
@@ -63,29 +65,54 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
     preloaderProgressEl.textContent = `Carregando... ${pct}%`;
   }
 
-  for (let i = 1; i <= FRAME_COUNT; i++) {
+  // carrega só o frame pedido (uma vez), em vez de todos de uma vez
+  function ensureLoaded(index) {
+    const idx = index - 1;
+    if (idx < 0 || idx >= FRAME_COUNT || requested[idx]) return;
+    requested[idx] = true;
     const img = new Image();
-    img.src = FRAME_PATH(i);
     img.onload = img.onerror = () => {
+      images[idx] = img;
       loadedCount++;
       updateProgressText();
-      if (loadedCount === 1) draw(1);
-      if (loadedCount >= MIN_FRAMES_BEFORE_READY) {
+      if (index === 1) {
+        draw(1);
         framesReadyForPreloader = true;
         tryHidePreloader();
       }
     };
-    images[i - 1] = img;
+    img.src = FRAME_PATH(index);
   }
+
+  function prefetchAround(index) {
+    for (let d = -PREFETCH_RADIUS; d <= PREFETCH_RADIUS; d++) {
+      ensureLoaded(index + d);
+    }
+  }
+
+  // preenchimento em segundo plano (baixa prioridade), pra quando o usuário rolar rápido
+  // o restante dos frames já esteja mais adiantado no cache
+  let bgIndex = 1;
+  function backgroundFill() {
+    if (bgIndex > FRAME_COUNT) return;
+    ensureLoaded(bgIndex);
+    bgIndex++;
+    (window.requestIdleCallback || ((cb) => setTimeout(cb, 60)))(backgroundFill);
+  }
+
+  ensureLoaded(1); // primeiro frame carrega imediatamente (aparece rápido)
+  prefetchAround(1);
+  setTimeout(backgroundFill, 1200); // resto carrega devagar, sem competir com o carregamento inicial
   updateProgressText();
 
   let lastDrawnIndex = 1;
   function draw(index) {
     let img = images[index - 1];
-    if (!img || !img.complete || img.naturalWidth === 0) {
+    if (!img) {
+      ensureLoaded(index); // pediu um frame que ainda não chegou: dispara o carregamento dele
       index = lastDrawnIndex;
       img = images[index - 1];
-      if (!img || !img.complete || img.naturalWidth === 0) return;
+      if (!img) return;
     } else {
       lastDrawnIndex = index;
     }
@@ -132,6 +159,7 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
       smoothedProgress += (videoProgress - smoothedProgress) * SMOOTHING;
       const frameIndex = clamp(Math.round(smoothedProgress * (FRAME_COUNT - 1)) + 1, 1, FRAME_COUNT);
       draw(frameIndex);
+      prefetchAround(frameIndex);
 
       const cardsProgress = clamp((progress - CARDS_PHASE_START) / (1 - CARDS_PHASE_START), 0, 1);
       if (cardsPanel) {
