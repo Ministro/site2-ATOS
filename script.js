@@ -17,94 +17,141 @@ window.addEventListener('scroll', () => {
 const revealEls = document.querySelectorAll('.reveal');
 const io = new IntersectionObserver((entries) => {
   entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      io.unobserve(e.target);
+    }
   });
 }, { threshold: 0.15 });
+
 revealEls.forEach(el => io.observe(el));
 
-// ===== PLAN TABS (Urbano / Rural) =====
+// ===== PLAN TABS =====
 function trocarPlanoTab(target, btn) {
   document.querySelectorAll('.plan-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
+
   document.getElementById('planos-urbano').style.display = target === 'urbano' ? 'grid' : 'none';
   document.getElementById('planos-rural').style.display = target === 'rural' ? 'grid' : 'none';
 }
 
-// ===== MODAL DE CADASTRO =====
+// ===== MODAL =====
 function abrirModal() {
   const overlay = document.getElementById('modalCadastro');
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
+
   if (typeof initMapa === 'function') {
     setTimeout(initMapa, 300);
   }
 }
+
 function fecharModal() {
   document.getElementById('modalCadastro').classList.remove('open');
   document.body.style.overflow = '';
 }
+
 document.getElementById('modalCadastro').addEventListener('click', (e) => {
   if (e.target.id === 'modalCadastro') fecharModal();
 });
+
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') fecharModal();
 });
 
-// ===== VÍDEO CONTROLADO PELO SCROLL + CARDS SUBINDO POR CIMA =====
-// Loop contínuo (em vez de só reagir a eventos de scroll) para ficar bem mais suave.
-// Nos primeiros 60% do scroll da seção, o vídeo avança/rebobina.
-// Nos 40% finais, os cards sobem por cima do vídeo (que fica parado no fim), um de cada vez.
+// ======================================================
+// 🚀 SCROLL FRAME ANIMATION (SUBSTITUI O VÍDEO)
+// ======================================================
+
 (function () {
-  const video = document.getElementById('scrollVideo');
   const section = document.getElementById('scrollVideoSection');
+  const canvas = document.getElementById('scrollCanvas');
+  const ctx = canvas ? canvas.getContext('2d') : null;
   const cardsPanel = document.getElementById('scrollCardsPanel');
   const overlay = document.getElementById('scrollVideoOverlay');
-  if (!video || !section) return;
 
-  const cards = cardsPanel ? Array.from(cardsPanel.querySelectorAll('.scroll-card')) : [];
-  const ctaBtn = cardsPanel ? cardsPanel.querySelector('.btn') : null;
-  const staggerItems = ctaBtn ? [...cards, ctaBtn] : cards;
+  if (!section || !canvas || !ctx) return;
 
-  const VIDEO_PHASE_END = 0.6;
-  const CARDS_PHASE_START = 0.55;
-  const SMOOTHING = 0.18; // menor = mais suave (e mais "atrasado"), maior = mais direto
+  const TOTAL_FRAMES = 722;
+  const framePath = (i) =>
+    `assets/frames/scroll-video_${String(i).padStart(6, '0')}.png`;
 
-  function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
+  const frames = [];
+  let loaded = 0;
 
-  let smoothedTime = 0;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // ===== PRELOAD FRAMES =====
+  for (let i = 1; i <= TOTAL_FRAMES; i++) {
+    const img = new Image();
+    img.src = framePath(i);
+
+    img.onload = () => {
+      loaded++;
+    };
+
+    frames.push(img);
+  }
+
+  function drawFrame(index) {
+    const img = frames[index];
+    if (!img || !img.complete) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const scale = Math.max(
+      canvas.width / img.width,
+      canvas.height / img.height
+    );
+
+    const x = (canvas.width - img.width * scale) / 2;
+    const y = (canvas.height - img.height * scale) / 2;
+
+    ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+  }
+
+  let currentFrame = 0;
+
+  function clamp(v, min, max) {
+    return Math.min(Math.max(v, min), max);
+  }
 
   function loop() {
-    const duration = video.duration;
     const rect = section.getBoundingClientRect();
-    const scrollableDistance = section.offsetHeight - window.innerHeight;
+    const scrollable = section.offsetHeight - window.innerHeight;
 
-    if (scrollableDistance > 0) {
-      let progress = (-rect.top) / scrollableDistance;
-      progress = clamp(progress, 0, 1);
+    if (scrollable > 0) {
+      let progress = clamp((-rect.top) / scrollable, 0, 1);
 
-      if (duration && !isNaN(duration)) {
-        const videoProgress = Math.min(progress / VIDEO_PHASE_END, 1);
-        const targetTime = videoProgress * duration;
-        // suaviza a aproximação até o tempo alvo (evita "pulos" perceptíveis)
-        smoothedTime += (targetTime - smoothedTime) * SMOOTHING;
-        if (Math.abs(smoothedTime - video.currentTime) > 0.008) {
-          video.currentTime = smoothedTime;
-        }
-      }
+      // converte scroll → frame
+      currentFrame = Math.floor(progress * (TOTAL_FRAMES - 1));
 
-      const cardsProgress = clamp((progress - CARDS_PHASE_START) / (1 - CARDS_PHASE_START), 0, 1);
+      drawFrame(currentFrame);
+
+      // ===== CARDS SUBINDO =====
+      const CARDS_START = 0.55;
+      const cardsProgress = clamp((progress - CARDS_START) / (1 - CARDS_START), 0, 1);
+
       if (cardsPanel) {
         cardsPanel.style.transform = `translateY(${(1 - cardsProgress) * 100}%)`;
       }
-      staggerItems.forEach((el, i) => {
+
+      const items = cardsPanel
+        ? Array.from(cardsPanel.querySelectorAll('.scroll-card, .btn'))
+        : [];
+
+      items.forEach((el, i) => {
         const start = i * 0.15;
         const local = clamp((cardsProgress - start) / (1 - start), 0, 1);
+
         el.style.opacity = local;
         el.style.transform = `translateY(${(1 - local) * 30}px)`;
       });
+
+      // overlay fade
       if (overlay) {
-        const overlayFade = clamp((progress - CARDS_PHASE_START) / 0.2, 0, 1);
-        overlay.style.opacity = String(1 - overlayFade);
+        overlay.style.opacity = String(1 - cardsProgress);
       }
     }
 
