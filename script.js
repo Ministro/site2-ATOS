@@ -1,12 +1,3 @@
-// ===== PRELOADER =====
-window.addEventListener('load', () => {
-  const preloader = document.getElementById('preloader');
-  if (!preloader) return;
-  setTimeout(() => {
-    preloader.classList.add('hidden');
-  }, 900);
-});
-
 // ===== HEADER SCROLL =====
 const header = document.getElementById('header');
 window.addEventListener('scroll', () => {
@@ -30,36 +21,92 @@ function trocarPlanoTab(target, btn) {
   document.getElementById('planos-rural').style.display = target === 'rural' ? 'grid' : 'none';
 }
 
-// ===== MODAL DE CADASTRO =====
-function abrirModal() {
-  const overlay = document.getElementById('modalCadastro');
-  overlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
-  if (typeof initMapa === 'function') {
-    setTimeout(initMapa, 300);
+// ===== PRELOADER (espera os primeiros frames carregarem) =====
+const preloaderProgressEl = document.getElementById('preloaderProgress');
+let framesReadyForPreloader = false;
+let pageLoaded = false;
+
+function tryHidePreloader() {
+  const preloader = document.getElementById('preloader');
+  if (!preloader) return;
+  if (pageLoaded && framesReadyForPreloader) {
+    preloader.classList.add('hidden');
   }
 }
-function fecharModal() {
-  document.getElementById('modalCadastro').classList.remove('open');
-  document.body.style.overflow = '';
-}
-document.getElementById('modalCadastro').addEventListener('click', (e) => {
-  if (e.target.id === 'modalCadastro') fecharModal();
+window.addEventListener('load', () => {
+  pageLoaded = true;
+  setTimeout(tryHidePreloader, 400); // segura um mínimo pra animação da logo aparecer
 });
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') fecharModal();
-});
+// trava de segurança: nunca deixa o preloader preso pra sempre
+setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
 
-// ===== VÍDEO CONTROLADO PELO SCROLL + CARDS SUBINDO POR CIMA =====
-// Loop contínuo (em vez de só reagir a eventos de scroll) para ficar bem mais suave.
-// Nos primeiros 60% do scroll da seção, o vídeo avança/rebobina.
-// Nos 40% finais, os cards sobem por cima do vídeo (que fica parado no fim), um de cada vez.
+// ===== SEQUÊNCIA DE IMAGENS CONTROLADA PELO SCROLL + CARDS SUBINDO POR CIMA =====
+// Os frames ficam em assets/frames/scroll-video_000001.png até scroll-video_000722.png
 (function () {
-  const video = document.getElementById('scrollVideo');
+  const canvas = document.getElementById('scrollCanvas');
   const section = document.getElementById('scrollVideoSection');
   const cardsPanel = document.getElementById('scrollCardsPanel');
   const overlay = document.getElementById('scrollVideoOverlay');
-  if (!video || !section) return;
+  if (!canvas || !section) return;
+  const ctx = canvas.getContext('2d');
+
+  const FRAME_COUNT = 722;
+  const FRAME_PATH = (i) => `assets/frames/scroll-video_${String(i).padStart(6, '0')}.png`;
+  const MIN_FRAMES_BEFORE_READY = Math.min(40, FRAME_COUNT);
+
+  const images = new Array(FRAME_COUNT);
+  let loadedCount = 0;
+
+  function updateProgressText() {
+    if (!preloaderProgressEl) return;
+    const pct = Math.round((loadedCount / FRAME_COUNT) * 100);
+    preloaderProgressEl.textContent = `Carregando... ${pct}%`;
+  }
+
+  for (let i = 1; i <= FRAME_COUNT; i++) {
+    const img = new Image();
+    img.src = FRAME_PATH(i);
+    img.onload = img.onerror = () => {
+      loadedCount++;
+      updateProgressText();
+      if (loadedCount === 1) draw(1);
+      if (loadedCount >= MIN_FRAMES_BEFORE_READY) {
+        framesReadyForPreloader = true;
+        tryHidePreloader();
+      }
+    };
+    images[i - 1] = img;
+  }
+  updateProgressText();
+
+  let lastDrawnIndex = 1;
+  function draw(index) {
+    let img = images[index - 1];
+    if (!img || !img.complete || img.naturalWidth === 0) {
+      index = lastDrawnIndex;
+      img = images[index - 1];
+      if (!img || !img.complete || img.naturalWidth === 0) return;
+    } else {
+      lastDrawnIndex = index;
+    }
+
+    const cw = canvas.width, ch = canvas.height;
+    const iw = img.naturalWidth, ih = img.naturalHeight;
+    const scale = Math.max(cw / iw, ch / ih); // comportamento tipo object-fit:cover
+    const dw = iw * scale, dh = ih * scale;
+    const dx = (cw - dw) / 2, dy = (ch - dh) / 2;
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(img, dx, dy, dw, dh);
+  }
+
+  function resizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = canvas.clientWidth * dpr;
+    canvas.height = canvas.clientHeight * dpr;
+    draw(lastDrawnIndex);
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
 
   const cards = cardsPanel ? Array.from(cardsPanel.querySelectorAll('.scroll-card')) : [];
   const ctaBtn = cardsPanel ? cardsPanel.querySelector('.btn') : null;
@@ -67,14 +114,13 @@ document.addEventListener('keydown', (e) => {
 
   const VIDEO_PHASE_END = 0.6;
   const CARDS_PHASE_START = 0.55;
-  const SMOOTHING = 0.18; // menor = mais suave (e mais "atrasado"), maior = mais direto
+  const SMOOTHING = 0.18;
 
   function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
 
-  let smoothedTime = 0;
+  let smoothedProgress = 0;
 
   function loop() {
-    const duration = video.duration;
     const rect = section.getBoundingClientRect();
     const scrollableDistance = section.offsetHeight - window.innerHeight;
 
@@ -82,15 +128,10 @@ document.addEventListener('keydown', (e) => {
       let progress = (-rect.top) / scrollableDistance;
       progress = clamp(progress, 0, 1);
 
-      if (duration && !isNaN(duration)) {
-        const videoProgress = Math.min(progress / VIDEO_PHASE_END, 1);
-        const targetTime = videoProgress * duration;
-        // suaviza a aproximação até o tempo alvo (evita "pulos" perceptíveis)
-        smoothedTime += (targetTime - smoothedTime) * SMOOTHING;
-        if (Math.abs(smoothedTime - video.currentTime) > 0.008) {
-          video.currentTime = smoothedTime;
-        }
-      }
+      const videoProgress = Math.min(progress / VIDEO_PHASE_END, 1);
+      smoothedProgress += (videoProgress - smoothedProgress) * SMOOTHING;
+      const frameIndex = clamp(Math.round(smoothedProgress * (FRAME_COUNT - 1)) + 1, 1, FRAME_COUNT);
+      draw(frameIndex);
 
       const cardsProgress = clamp((progress - CARDS_PHASE_START) / (1 - CARDS_PHASE_START), 0, 1);
       if (cardsPanel) {
@@ -113,3 +154,23 @@ document.addEventListener('keydown', (e) => {
 
   requestAnimationFrame(loop);
 })();
+
+// ===== MODAL DE CADASTRO =====
+function abrirModal() {
+  const overlay = document.getElementById('modalCadastro');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  if (typeof initMapa === 'function') {
+    setTimeout(initMapa, 300);
+  }
+}
+function fecharModal() {
+  document.getElementById('modalCadastro').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('modalCadastro').addEventListener('click', (e) => {
+  if (e.target.id === 'modalCadastro') fecharModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') fecharModal();
+});

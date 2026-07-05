@@ -16,6 +16,16 @@
   animation:preloaderLogoIn 1.1s cubic-bezier(.2,.8,.3,1) forwards,
             preloaderPulse 1.6s ease-in-out infinite 1.1s;
 }
+.preloader-progress{
+  position:absolute;
+  bottom:60px;
+  left:0; right:0;
+  text-align:center;
+  color:var(--text-muted);
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;
+  letter-spacing:0.08em;
+}
 @keyframes preloaderLogoIn{
   0%{opacity:0; transform:scale(0.75);}
   60%{opacity:1; transform:scale(1.06);}
@@ -194,11 +204,11 @@ nav{display:flex; align-items:center; justify-content:space-between;}
   overflow:hidden;
   background:var(--bg-deep);
 }
-.scroll-video-sticky video{
+.scroll-video-sticky canvas{
   position:absolute; inset:0;
   width:100%; height:100%;
-  object-fit:cover;
   display:block;
+  background:var(--bg-deep);
 }
 .scroll-video-overlay{
   position:absolute; inset:0;
