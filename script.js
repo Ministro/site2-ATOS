@@ -51,7 +51,7 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
   if (!canvas || !section) return;
   const ctx = canvas.getContext('2d');
 
-  const FRAME_COUNT = 200; // <-- troque para o número de frames que você gerar
+  const FRAME_COUNT = 350; // <-- troque para o número de frames que você gerar
   const FRAME_PATH = (i) => `assets/frames/scroll-video_${String(i).padStart(6, '0')}.webp`;
   const PREFETCH_RADIUS = 12; // quantos frames pra frente/trás ficam sempre pré-carregados
 
