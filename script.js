@@ -1,3 +1,12 @@
+// ===== PRELOADER =====
+window.addEventListener('load', () => {
+  const preloader = document.getElementById('preloader');
+  if (!preloader) return;
+  setTimeout(() => {
+    preloader.classList.add('hidden');
+  }, 900);
+});
+
 // ===== HEADER SCROLL =====
 const header = document.getElementById('header');
 window.addEventListener('scroll', () => {
@@ -42,8 +51,9 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ===== VÍDEO CONTROLADO PELO SCROLL + CARDS SUBINDO POR CIMA =====
+// Loop contínuo (em vez de só reagir a eventos de scroll) para ficar bem mais suave.
 // Nos primeiros 60% do scroll da seção, o vídeo avança/rebobina.
-// Nos 40% finais, um painel de cards sobe por cima do vídeo (que fica parado no fim).
+// Nos 40% finais, os cards sobem por cima do vídeo (que fica parado no fim), um de cada vez.
 (function () {
   const video = document.getElementById('scrollVideo');
   const section = document.getElementById('scrollVideoSection');
@@ -51,52 +61,55 @@ document.addEventListener('keydown', (e) => {
   const overlay = document.getElementById('scrollVideoOverlay');
   if (!video || !section) return;
 
-  const VIDEO_PHASE_END = 0.6; // % do scroll dedicado a avançar o vídeo
-  const CARDS_PHASE_START = 0.55; // começa um pouco antes, pra transição ficar suave
+  const cards = cardsPanel ? Array.from(cardsPanel.querySelectorAll('.scroll-card')) : [];
+  const ctaBtn = cardsPanel ? cardsPanel.querySelector('.btn') : null;
+  const staggerItems = ctaBtn ? [...cards, ctaBtn] : cards;
 
-  let ticking = false;
+  const VIDEO_PHASE_END = 0.6;
+  const CARDS_PHASE_START = 0.55;
+  const SMOOTHING = 0.18; // menor = mais suave (e mais "atrasado"), maior = mais direto
 
-  function renderScrollVideo() {
-    ticking = false;
+  function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
+
+  let smoothedTime = 0;
+
+  function loop() {
     const duration = video.duration;
-
     const rect = section.getBoundingClientRect();
     const scrollableDistance = section.offsetHeight - window.innerHeight;
-    if (scrollableDistance <= 0) return;
 
-    let progress = (-rect.top) / scrollableDistance;
-    progress = Math.min(Math.max(progress, 0), 1);
+    if (scrollableDistance > 0) {
+      let progress = (-rect.top) / scrollableDistance;
+      progress = clamp(progress, 0, 1);
 
-    // fase do vídeo
-    if (duration && !isNaN(duration)) {
-      const videoProgress = Math.min(progress / VIDEO_PHASE_END, 1);
-      const targetTime = videoProgress * duration;
-      if (Math.abs(video.currentTime - targetTime) > 0.02) {
-        video.currentTime = targetTime;
+      if (duration && !isNaN(duration)) {
+        const videoProgress = Math.min(progress / VIDEO_PHASE_END, 1);
+        const targetTime = videoProgress * duration;
+        // suaviza a aproximação até o tempo alvo (evita "pulos" perceptíveis)
+        smoothedTime += (targetTime - smoothedTime) * SMOOTHING;
+        if (Math.abs(smoothedTime - video.currentTime) > 0.008) {
+          video.currentTime = smoothedTime;
+        }
+      }
+
+      const cardsProgress = clamp((progress - CARDS_PHASE_START) / (1 - CARDS_PHASE_START), 0, 1);
+      if (cardsPanel) {
+        cardsPanel.style.transform = `translateY(${(1 - cardsProgress) * 100}%)`;
+      }
+      staggerItems.forEach((el, i) => {
+        const start = i * 0.15;
+        const local = clamp((cardsProgress - start) / (1 - start), 0, 1);
+        el.style.opacity = local;
+        el.style.transform = `translateY(${(1 - local) * 30}px)`;
+      });
+      if (overlay) {
+        const overlayFade = clamp((progress - CARDS_PHASE_START) / 0.2, 0, 1);
+        overlay.style.opacity = String(1 - overlayFade);
       }
     }
 
-    // fase dos cards subindo por cima
-    if (cardsPanel) {
-      const cardsProgress = Math.min(Math.max((progress - CARDS_PHASE_START) / (1 - CARDS_PHASE_START), 0), 1);
-      cardsPanel.style.transform = `translateY(${(1 - cardsProgress) * 100}%)`;
-    }
-    if (overlay) {
-      const overlayFade = Math.min(Math.max((progress - CARDS_PHASE_START) / 0.2, 0), 1);
-      overlay.style.opacity = String(1 - overlayFade);
-    }
+    requestAnimationFrame(loop);
   }
 
-  function onScroll() {
-    if (!ticking) {
-      requestAnimationFrame(renderScrollVideo);
-      ticking = true;
-    }
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
-  video.addEventListener('loadedmetadata', renderScrollVideo);
-  video.addEventListener('canplay', renderScrollVideo);
-  renderScrollVideo();
+  requestAnimationFrame(loop);
 })();
