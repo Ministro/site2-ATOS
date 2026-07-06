@@ -47,11 +47,10 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
   const canvas = document.getElementById('scrollCanvas');
   const section = document.getElementById('scrollVideoSection');
   const cardsPanel = document.getElementById('scrollCardsPanel');
-  const overlay = document.getElementById('scrollVideoOverlay');
   if (!canvas || !section) return;
   const ctx = canvas.getContext('2d');
 
-  const FRAME_COUNT = 350; // <-- troque para o número de frames que você gerar
+  const FRAME_COUNT = 150; // <-- troque para o número de frames que você gerar
   const FRAME_PATH = (i) => `assets/frames/scroll-video_${String(i).padStart(6, '0')}.webp`;
   const PREFETCH_RADIUS = 12; // quantos frames pra frente/trás ficam sempre pré-carregados
 
@@ -135,17 +134,19 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
 
+  const heroLayer = document.getElementById('heroLayer');
   const cards = cardsPanel ? Array.from(cardsPanel.querySelectorAll('.scroll-card')) : [];
   const ctaBtn = cardsPanel ? cardsPanel.querySelector('.btn') : null;
   const staggerItems = ctaBtn ? [...cards, ctaBtn] : cards;
 
-  const VIDEO_PHASE_END = 0.6;
+  const HERO_FADE_END = 0.12; // % do scroll em que o hero termina de desaparecer
   const CARDS_PHASE_START = 0.55;
   const SMOOTHING = 0.18;
 
   function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
 
   let smoothedProgress = 0;
+  let heroInteractive = true;
 
   function loop() {
     const rect = section.getBoundingClientRect();
@@ -155,12 +156,25 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
       let progress = (-rect.top) / scrollableDistance;
       progress = clamp(progress, 0, 1);
 
-      const videoProgress = Math.min(progress / VIDEO_PHASE_END, 1);
-      smoothedProgress += (videoProgress - smoothedProgress) * SMOOTHING;
+      // o vídeo avança do início ao fim do scroll da seção e NUNCA para
+      smoothedProgress += (progress - smoothedProgress) * SMOOTHING;
       const frameIndex = clamp(Math.round(smoothedProgress * (FRAME_COUNT - 1)) + 1, 1, FRAME_COUNT);
       draw(frameIndex);
       prefetchAround(frameIndex);
 
+      // hero desaparece suavemente logo no início, revelando o vídeo
+      if (heroLayer) {
+        const heroFade = clamp(progress / HERO_FADE_END, 0, 1);
+        heroLayer.style.opacity = String(1 - heroFade);
+        heroLayer.style.transform = `translateY(${heroFade * -40}px)`;
+        const shouldBeInteractive = heroFade < 0.5;
+        if (shouldBeInteractive !== heroInteractive) {
+          heroInteractive = shouldBeInteractive;
+          heroLayer.style.pointerEvents = heroInteractive ? 'auto' : 'none';
+        }
+      }
+
+      // cards sobem por cima do vídeo (que continua rodando por baixo)
       const cardsProgress = clamp((progress - CARDS_PHASE_START) / (1 - CARDS_PHASE_START), 0, 1);
       if (cardsPanel) {
         cardsPanel.style.transform = `translateY(${(1 - cardsProgress) * 100}%)`;
@@ -171,10 +185,6 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
         el.style.opacity = local;
         el.style.transform = `translateY(${(1 - local) * 30}px)`;
       });
-      if (overlay) {
-        const overlayFade = clamp((progress - CARDS_PHASE_START) / 0.2, 0, 1);
-        overlay.style.opacity = String(1 - overlayFade);
-      }
     }
 
     requestAnimationFrame(loop);
