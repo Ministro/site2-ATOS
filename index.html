@@ -32,41 +32,35 @@
   </nav>
 </header>
 
-<section class="hero">
-  <div class="hero-eyebrow eyebrow hero-in hero-in-1">Apresentando a Atos Telecom</div>
-  <h1 class="hero-in hero-in-2">Internet que <span class="gradient-text">chega</span><br>onde você está</h1>
-  <p class="sub hero-in hero-in-3">Fibra de alta velocidade para a cidade e conexão de qualidade para a zona rural. Instalação rápida e suporte de verdade.</p>
-  <div class="hero-ctas hero-in hero-in-4">
-    <button class="btn" onclick="abrirModal()">Seja nosso cliente</button>
-    <a href="#planos" class="btn btn-ghost">Ver planos</a>
-  </div>
-
-  <div class="mosaic hero-in hero-in-5">
-    <div class="tile"></div>
-    <div class="tile"></div>
-    <div class="tile"></div>
-    <div class="tile"></div>
-    <div class="tile"></div>
-    <div class="mosaic-word">ATOS</div>
-  </div>
-  <div class="badges">
-    <span>★★★★★ 4.9/5 de avaliação</span>
-    <span>Milhares de clientes conectados</span>
-    <span>Suporte local</span>
-  </div>
-</section>
-
-<!-- ============ VÍDEO CONTROLADO PELO SCROLL ============ -->
+<!-- ============ HERO + VÍDEO CONTROLADO PELO SCROLL ============ -->
 <!-- Sequência de imagens em assets/frames/ (scroll-video_000001.webp ... ) -->
 <!-- Ajuste FRAME_COUNT no script.js para bater com a quantidade real de frames -->
 <section class="scroll-video-section" id="scrollVideoSection">
   <div class="scroll-video-sticky">
     <canvas id="scrollCanvas"></canvas>
 
-    <div class="scroll-video-overlay" id="scrollVideoOverlay">
-      <div class="eyebrow">Nossa cobertura</div>
-      <h2>Da cidade ao campo,<br>sem perder conexão</h2>
-      <p>Role a página para acompanhar</p>
+    <div class="hero-layer" id="heroLayer">
+      <div class="hero-eyebrow eyebrow hero-in hero-in-1">Apresentando a Atos Telecom</div>
+      <h1 class="hero-in hero-in-2">Internet que <span class="gradient-text">chega</span><br>onde você está</h1>
+      <p class="sub hero-in hero-in-3">Fibra de alta velocidade para a cidade e conexão de qualidade para a zona rural. Instalação rápida e suporte de verdade.</p>
+      <div class="hero-ctas hero-in hero-in-4">
+        <button class="btn" onclick="abrirModal()">Seja nosso cliente</button>
+        <a href="#planos" class="btn btn-ghost">Ver planos</a>
+      </div>
+
+      <div class="mosaic hero-in hero-in-5">
+        <div class="tile"></div>
+        <div class="tile"></div>
+        <div class="tile"></div>
+        <div class="tile"></div>
+        <div class="tile"></div>
+        <div class="mosaic-word">ATOS</div>
+      </div>
+      <div class="badges">
+        <span>★★★★★ 4.9/5 de avaliação</span>
+        <span>Milhares de clientes conectados</span>
+        <span>Suporte local</span>
+      </div>
     </div>
 
     <div class="scroll-cards-panel" id="scrollCardsPanel">
