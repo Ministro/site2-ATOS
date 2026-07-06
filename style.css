@@ -352,6 +352,87 @@ section{padding:120px 0;}
 .cta-band h2{font-size:clamp(32px,5vw,60px); max-width:700px; margin:0 auto;}
 .cta-band p{color:rgba(245,243,255,0.8); margin:20px auto 34px; max-width:480px;}
 
+/* CARROSSEL DE LOGOS (apps de streaming) */
+.marquee{width:100%; overflow:hidden; mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent); -webkit-mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent);}
+.marquee-track{
+  display:flex; align-items:center; gap:48px;
+  width:max-content;
+  animation:marqueeScroll 24s linear infinite;
+}
+.marquee:hover .marquee-track{animation-play-state:paused;}
+.marquee-track img{
+  height:38px; width:auto; max-width:130px;
+  object-fit:contain; flex-shrink:0;
+  background:#ffffff; border-radius:8px;
+  padding:8px 14px;
+}
+@keyframes marqueeScroll{
+  from{transform:translateX(0);}
+  to{transform:translateX(-50%);}
+}
+
+/* CARDS LADO A LADO (Como funciona + Speed Test) */
+.two-col-cards{display:grid; grid-template-columns:1.3fr 1fr; gap:24px; align-items:stretch;}
+.two-col-cards .cinematic{padding:56px;}
+.speedtest-card{
+  background:var(--bg-panel);
+  border:1px solid var(--border-soft);
+  border-radius:24px;
+  padding:48px 36px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; gap:6px;
+}
+.speedtest-icon{width:72px; height:72px; object-fit:contain; margin-bottom:12px;}
+.speedtest-card h2{font-size:clamp(24px,3vw,32px); margin-top:6px;}
+.speedtest-card p{color:var(--text-muted); margin-top:14px; font-size:15px; line-height:1.6;}
+.speedtest-card .btn{margin-top:24px;}
+
+@media(max-width:900px){
+  .two-col-cards{grid-template-columns:1fr;}
+  .two-col-cards .cinematic{padding:40px;}
+}
+
+/* MODAIS PEQUENOS (Quem Somos Nós / Contato) */
+.modal-card-small{max-width:520px; height:auto; max-height:82vh;}
+.modal-body-text{padding:8px 48px 48px; color:var(--text-muted); font-size:15px; line-height:1.75;}
+.contact-list{display:flex; flex-direction:column; gap:14px; padding:8px 48px 48px;}
+.contact-item{
+  display:flex; align-items:center; gap:16px;
+  background:var(--bg-panel-2); border:1px solid var(--border-soft);
+  border-radius:12px; padding:16px 20px;
+  color:var(--text-light); font-weight:600; font-size:15px;
+  transition:border-color .2s ease, transform .2s ease;
+}
+.contact-item:hover{border-color:var(--accent-orange); transform:translateY(-2px);}
+.contact-item img{width:30px; height:30px; object-fit:contain; flex-shrink:0;}
+
+.area-cliente-iframe{width:100%; height:70vh; border:none; display:block; background:#fff;}
+
+@media(max-width:600px){
+  .modal-card-small{max-height:88vh;}
+  .area-cliente-iframe{height:60vh;}
+}
+
+/* INSTAGRAM (rodapé) */
+.instagram-link{display:flex !important; align-items:center; gap:10px; margin-top:6px;}
+.instagram-link img{width:20px; height:20px; object-fit:contain;}
+
+/* BOTÃO FLUTUANTE DO WHATSAPP */
+.whatsapp-float{
+  position:fixed; bottom:24px; right:24px; z-index:900;
+  width:58px; height:58px; border-radius:50%;
+  background:#25D366;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 10px 28px rgba(0,0,0,0.4);
+  transition:transform .2s ease;
+}
+.whatsapp-float:hover{transform:scale(1.08);}
+.whatsapp-float img{width:32px; height:32px;}
+@media(max-width:600px){
+  .whatsapp-float{width:52px; height:52px; bottom:16px; right:16px;}
+  .whatsapp-float img{width:28px; height:28px;}
+}
+
 footer{border-top:1px solid var(--border-soft); padding:70px 0 40px;}
 .footer-grid{display:grid; grid-template-columns:1.4fr repeat(3,1fr); gap:40px; margin-bottom:60px;}
 .footer-grid h4{font-size:13px; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-muted); margin-bottom:18px;}
