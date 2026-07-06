@@ -239,15 +239,7 @@ nav{display:flex; align-items:center; justify-content:space-between;}
   .scroll-cards-panel{padding:24px; flex-direction:column; align-items:stretch;}
 }
 
-/* LOGO STRIP */
-.logo-strip{
-  padding:40px 0; border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft);
-}
-.logo-strip .wrap{
-  display:flex; gap:56px; justify-content:space-between; align-items:center; flex-wrap:wrap;
-  color:var(--text-muted); font-family:'JetBrains Mono',monospace; font-size:15px; letter-spacing:0.05em;
-  opacity:0.7;
-}
+/* LOGO STRIP: ver bloco de carrossel mais abaixo */
 
 /* SECTIONS */
 section{padding:120px 0;}
@@ -353,18 +345,27 @@ section{padding:120px 0;}
 .cta-band p{color:rgba(245,243,255,0.8); margin:20px auto 34px; max-width:480px;}
 
 /* CARROSSEL DE LOGOS (apps de streaming) */
+.logo-strip{
+  padding:22px 0;
+  border-top:1px solid var(--border-soft);
+  border-bottom:1px solid var(--border-soft);
+  overflow:hidden;
+}
 .marquee{width:100%; overflow:hidden; mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent); -webkit-mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent);}
 .marquee-track{
-  display:flex; align-items:center; gap:48px;
+  display:flex; align-items:center; gap:32px;
   width:max-content;
   animation:marqueeScroll 24s linear infinite;
 }
 .marquee:hover .marquee-track{animation-play-state:paused;}
 .marquee-track img{
-  height:38px; width:auto; max-width:130px;
+  height:80px; width:auto; max-width:220px;
   object-fit:contain; flex-shrink:0;
-  background:#ffffff; border-radius:8px;
-  padding:8px 14px;
+  background:#ffffff; border-radius:10px;
+  padding:6px 16px;
+}
+@media(max-width:600px){
+  .marquee-track img{height:56px; max-width:160px;}
 }
 @keyframes marqueeScroll{
   from{transform:translateX(0);}
@@ -386,6 +387,7 @@ section{padding:120px 0;}
 .speedtest-card h2{font-size:clamp(24px,3vw,32px); margin-top:6px;}
 .speedtest-card p{color:var(--text-muted); margin-top:14px; font-size:15px; line-height:1.6;}
 .speedtest-card .btn{margin-top:24px;}
+.speedtest-solo{max-width:560px; margin:0 auto; padding:64px 48px;}
 
 @media(max-width:900px){
   .two-col-cards{grid-template-columns:1fr;}
