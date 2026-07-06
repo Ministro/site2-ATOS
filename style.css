@@ -120,6 +120,7 @@ nav{display:flex; align-items:center; justify-content:space-between;}
   color:#140A10; border:none; cursor:pointer;
   transition:transform .2s ease, box-shadow .2s ease;
   font-family:'Inter',sans-serif;
+  white-space:nowrap;
 }
 .btn:hover{transform:translateY(-2px); box-shadow:0 10px 30px -8px rgba(233,69,132,0.55);}
 .btn-ghost{
@@ -344,32 +345,33 @@ section{padding:120px 0;}
 .cta-band h2{font-size:clamp(32px,5vw,60px); max-width:700px; margin:0 auto;}
 .cta-band p{color:rgba(245,243,255,0.8); margin:20px auto 34px; max-width:480px;}
 
-/* CARROSSEL DE LOGOS (apps de streaming) */
+/* FAIXA DE LOGOS (estática, sem animação) */
 .logo-strip{
-  padding:0;
+  padding:32px 0;
   border-top:1px solid var(--border-soft);
   border-bottom:1px solid var(--border-soft);
-  overflow:hidden;
 }
-.marquee{width:100%; overflow:hidden; mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent); -webkit-mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent);}
-.marquee-track{
-  display:flex; align-items:center; gap:0;
-  width:max-content;
-  animation:marqueeScroll 36s linear infinite;
+.logo-strip-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:32px 40px;
 }
-.marquee:hover .marquee-track{animation-play-state:paused;}
-.marquee-track img{
-  width:150px; height:150px;
-  object-fit:cover;
+.logo-strip-row img{
+  height:34px;
+  width:auto;
+  max-width:130px;
+  object-fit:contain;
+  opacity:0.85;
   flex-shrink:0;
-  display:block;
 }
-@keyframes marqueeScroll{
-  from{transform:translateX(0);}
-  to{transform:translateX(-16.6667%);}
+@media(max-width:900px){
+  .logo-strip-row{justify-content:center;}
 }
 @media(max-width:600px){
-  .marquee-track img{width:100px; height:100px;}
+  .logo-strip-row img{height:26px; max-width:100px;}
+  .logo-strip-row{gap:20px 28px;}
 }
 
 /* CARDS LADO A LADO (Como funciona + Speed Test) */
@@ -657,7 +659,28 @@ footer{border-top:1px solid var(--border-soft); padding:70px 0 40px;}
   .modal-header{padding:36px 24px 24px;}
   .linha-campos{flex-direction:column;}
 }
+@media(max-width:480px){
+  header .wrap{padding:0 20px;}
+  .logo-img{height:26px; max-width:100px;}
+  header .btn{padding:9px 16px; font-size:12.5px;}
+  .nav-actions{gap:8px;}
+  .menu-toggle{font-size:22px;}
+}
 @media(max-width:600px){
   .modal-card{height:92vh; border-radius:14px;}
   .modal-overlay{padding:10px;}
+  .hero-layer{
+    justify-content:flex-start;
+    padding-top:110px;
+    padding-bottom:20px;
+    overflow:hidden;
+  }
+  .hero-layer h1{font-size:clamp(30px,9vw,40px);}
+  .hero-layer p.sub{font-size:14px; margin-top:14px;}
+  .hero-ctas{margin-top:22px;}
+  .badges{display:none;}
+  .mosaic{
+    margin-top:32px;
+    grid-template-rows:repeat(3,64px);
+  }
 }
