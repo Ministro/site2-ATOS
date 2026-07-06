@@ -241,7 +241,7 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 
 /* LOGO STRIP */
 .logo-strip{
-  padding:40px 0; border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft);
+  padding:20px 0; border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft);
 }
 .logo-strip .wrap{
   display:flex; gap:56px; justify-content:space-between; align-items:center; flex-wrap:wrap;
