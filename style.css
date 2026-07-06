@@ -194,7 +194,7 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 /* SCROLL VIDEO (hero + vídeo + cards, tudo na mesma seção fixa) */
 .scroll-video-section{
   position:relative;
-  height:300vh; /* mais alto = cada fase (hero/video/cards) tem mais "tempo" de scroll */
+  height:420vh; /* mais alto = cada fase (hero/video/cards) tem mais "tempo" de scroll */
 }
 .scroll-video-sticky{
   position:sticky;
