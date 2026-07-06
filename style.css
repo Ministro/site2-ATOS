@@ -3,7 +3,7 @@
   position:fixed; inset:0; z-index:3000;
   background:var(--bg-deep);
   display:flex; align-items:center; justify-content:center;
-  transition:opacity 1.0s ease, visibility 1.0s ease;
+  transition:opacity .6s ease, visibility .6s ease;
 }
 .preloader.hidden{
   opacity:0;
