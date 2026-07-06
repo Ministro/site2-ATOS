@@ -128,15 +128,14 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 .btn-ghost:hover{border-color:var(--accent-orange); box-shadow:none;}
 .menu-toggle{display:none; background:none; border:none; color:var(--text-light); font-size:26px; cursor:pointer;}
 
-/* HERO */
-.hero{
-  min-height:100vh;
+/* HERO (agora vive dentro da seção fixa do vídeo, como camada) */
+.hero-layer{
+  position:absolute; inset:0; z-index:3;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   text-align:center;
   padding:160px 32px 100px;
-  position:relative;
 }
-.hero::before{
+.hero-layer::before{
   content:"";
   position:absolute; inset:0;
   background:
@@ -145,11 +144,11 @@ nav{display:flex; align-items:center; justify-content:space-between;}
   pointer-events:none;
 }
 .hero-eyebrow{margin-bottom:22px;}
-.hero h1{
+.hero-layer h1{
   font-size:clamp(42px,7vw,96px);
   max-width:1000px;
 }
-.hero p.sub{
+.hero-layer p.sub{
   margin-top:26px; max-width:560px; color:var(--text-muted);
   font-size:18px; line-height:1.6;
 }
@@ -192,10 +191,10 @@ nav{display:flex; align-items:center; justify-content:space-between;}
   margin-top:34px; color:var(--text-muted); font-size:14px; font-weight:600; flex-wrap:wrap;
 }
 
-/* SCROLL VIDEO */
+/* SCROLL VIDEO (hero + vídeo + cards, tudo na mesma seção fixa) */
 .scroll-video-section{
   position:relative;
-  height:340vh; /* mais alto = video + cards têm mais "tempo" de scroll cada um */
+  height:420vh; /* mais alto = cada fase (hero/video/cards) tem mais "tempo" de scroll */
 }
 .scroll-video-sticky{
   position:sticky;
@@ -209,20 +208,12 @@ nav{display:flex; align-items:center; justify-content:space-between;}
   width:100%; height:100%;
   display:block;
   background:var(--bg-deep);
+  z-index:1;
 }
-.scroll-video-overlay{
-  position:absolute; inset:0;
-  display:flex; flex-direction:column; justify-content:flex-end;
-  padding:80px;
-  background:linear-gradient(to top, rgba(11,10,20,0.85), transparent 55%);
-  transition:opacity .2s linear;
-}
-.scroll-video-overlay h2{font-size:clamp(28px,4.5vw,52px); max-width:640px; margin-top:14px;}
-.scroll-video-overlay p{color:var(--text-muted); margin-top:14px; font-size:14px;}
 
 /* painel que "sobe" por cima do vídeo fixo */
 .scroll-cards-panel{
-  position:absolute; left:0; right:0; bottom:0;
+  position:absolute; left:0; right:0; bottom:0; z-index:2;
   padding:60px 80px 70px;
   background:linear-gradient(to top, rgba(11,10,20,0.97) 40%, rgba(11,10,20,0.85) 80%, transparent);
   display:flex; align-items:flex-end; gap:24px; flex-wrap:wrap;
@@ -243,8 +234,8 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 .scroll-card p{color:var(--text-muted); font-size:14px; line-height:1.5;}
 
 @media(max-width:900px){
-  .scroll-video-section{height:280vh;}
-  .scroll-video-overlay{padding:32px;}
+  .scroll-video-section{height:340vh;}
+  .hero-layer{padding:120px 24px 80px;}
   .scroll-cards-panel{padding:24px; flex-direction:column; align-items:stretch;}
 }
 
