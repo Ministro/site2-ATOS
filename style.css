@@ -98,7 +98,7 @@ h1,h2,h3{
 header{
   position:fixed; top:0; left:0; right:0; z-index:100;
   background:linear-gradient(to bottom, rgba(11,10,20,0.9), rgba(11,10,20,0));
-  padding:10px 0;
+  padding:22px 0;
   transition:background .3s ease;
 }
 header.scrolled{background:rgba(11,10,20,0.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--border-soft);}
@@ -194,7 +194,7 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 /* SCROLL VIDEO (hero + vídeo + cards, tudo na mesma seção fixa) */
 .scroll-video-section{
   position:relative;
-  height:420vh; /* mais alto = cada fase (hero/video/cards) tem mais "tempo" de scroll */
+  height:300vh; /* mais alto = cada fase (hero/video/cards) tem mais "tempo" de scroll */
 }
 .scroll-video-sticky{
   position:sticky;
@@ -241,7 +241,7 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 
 /* LOGO STRIP */
 .logo-strip{
-  padding:20px 0; border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft);
+  padding:40px 0; border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft);
 }
 .logo-strip .wrap{
   display:flex; gap:56px; justify-content:space-between; align-items:center; flex-wrap:wrap;
