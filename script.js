@@ -13,6 +13,35 @@ const io = new IntersectionObserver((entries) => {
 }, { threshold: 0.15 });
 revealEls.forEach(el => io.observe(el));
 
+// ===== CONTAGEM ANIMADA DOS NÚMEROS (Resultados) =====
+function animarContagem(el) {
+  const target = parseInt(el.dataset.target, 10) || 0;
+  const prefix = el.dataset.prefix || '';
+  const suffix = el.dataset.suffix || '';
+  const duration = 1100;
+  const start = performance.now();
+
+  function passo(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3); // ease-out, sobe rápido no começo
+    const current = Math.round(target * eased);
+    el.textContent = prefix + current + suffix;
+    if (progress < 1) requestAnimationFrame(passo);
+    else el.textContent = prefix + target + suffix;
+  }
+  requestAnimationFrame(passo);
+}
+const statObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      animarContagem(entry.target);
+      statObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.4 });
+document.querySelectorAll('.stat-num[data-target]').forEach((el) => statObserver.observe(el));
+
 // ===== PLAN TABS (Urbano / Rural) =====
 function trocarPlanoTab(target, btn) {
   document.querySelectorAll('.plan-tab').forEach(t => t.classList.remove('active'));
@@ -50,7 +79,7 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
   if (!canvas || !section) return;
   const ctx = canvas.getContext('2d');
 
-  const FRAME_COUNT = 722; // <-- troque para o número de frames que você gerar
+  const FRAME_COUNT = 150; // <-- troque para o número de frames que você gerar
   const FRAME_PATH = (i) => `assets/frames/scroll-video_${String(i).padStart(6, '0')}.webp`;
   const PREFETCH_RADIUS = 12; // quantos frames pra frente/trás ficam sempre pré-carregados
 
@@ -193,22 +222,33 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
   requestAnimationFrame(loop);
 })();
 
-// ===== MODAL DE CADASTRO =====
-function abrirModal() {
-  const overlay = document.getElementById('modalCadastro');
+// ===== SISTEMA GENÉRICO DE MODAIS =====
+function abrirModalGenerico(id) {
+  const overlay = document.getElementById(id);
+  if (!overlay) return;
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
-  if (typeof initMapa === 'function') {
+  if (id === 'modalCadastro' && typeof initMapa === 'function') {
     setTimeout(initMapa, 300);
   }
 }
-function fecharModal() {
-  document.getElementById('modalCadastro').classList.remove('open');
-  document.body.style.overflow = '';
+function fecharModalGenerico(id) {
+  const overlay = document.getElementById(id);
+  if (overlay) overlay.classList.remove('open');
+  const algumAberto = document.querySelectorAll('.modal-overlay.open').length > 0;
+  if (!algumAberto) document.body.style.overflow = '';
 }
-document.getElementById('modalCadastro').addEventListener('click', (e) => {
-  if (e.target.id === 'modalCadastro') fecharModal();
+document.querySelectorAll('.modal-overlay').forEach((overlay) => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) fecharModalGenerico(overlay.id);
+  });
 });
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') fecharModal();
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach((overlay) => fecharModalGenerico(overlay.id));
+  }
 });
+
+// aliases para manter compatibilidade com os botões já existentes ("Seja nosso cliente")
+function abrirModal() { abrirModalGenerico('modalCadastro'); }
+function fecharModal() { fecharModalGenerico('modalCadastro'); }
