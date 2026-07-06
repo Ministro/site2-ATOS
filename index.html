@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body id="topo">
 
 <div class="preloader" id="preloader">
   <img src="https://i.supaimg.com/12820c3b-da0c-4cbf-86c0-12ae6f6217c6.png" alt="Atos Telecom" class="preloader-logo">
@@ -18,15 +18,15 @@
 
 <header id="header">
   <nav class="wrap">
-    <a href="#" class="logo"><img src="https://i.supaimg.com/12820c3b-da0c-4cbf-86c0-12ae6f6217c6.png" alt="Logo Atos Telecom" class="logo-img"></a>
+    <a href="#topo" class="logo"><img src="https://i.supaimg.com/12820c3b-da0c-4cbf-86c0-12ae6f6217c6.png" alt="Logo Atos Telecom" class="logo-img"></a>
     <div class="nav-links">
-      <a href="#produto">Produto</a>
-      <a href="#recursos">Recursos</a>
-      <a href="#numeros">Resultados</a>
+      <a href="#topo">Início</a>
       <a href="#planos">Planos</a>
+      <a href="javascript:void(0)" onclick="abrirModalGenerico('modalSobre')">Quem Somos Nós</a>
+      <a href="javascript:void(0)" onclick="abrirModalGenerico('modalContato')">Contato</a>
     </div>
     <div style="display:flex; gap:14px; align-items:center;">
-      <button class="btn" onclick="abrirModal()">Seja nosso cliente</button>
+      <button class="btn" onclick="abrirModalGenerico('modalAreaCliente')">Área do Cliente</button>
       <button class="menu-toggle">☰</button>
     </div>
   </nav>
@@ -85,12 +85,21 @@
 </section>
 
 <div class="logo-strip">
-  <div class="wrap">
-    <span>CANDEIAS DO JAMARI</span>
-    <span>PORTO VELHO</span>
-    <span>ZONA RURAL</span>
-    <span>BR 364</span>
-    <span>REGIÃO METROPOLITANA</span>
+  <div class="marquee">
+    <div class="marquee-track">
+      <img src="https://blogdehollywood.b-cdn.net/wp-content/uploads/2020/12/hbo-max-logo.jpg" alt="HBO Max">
+      <img src="https://t.ctcdn.com.br/spMM1aS0iCEIStCRdXpOeCTNQIg=/1024x576/smart/i874303.png" alt="Disney+">
+      <img src="https://lumenfibra.com.br/wp-content/uploads/2025/08/Sky.png" alt="Sky+">
+      <img src="https://ouronet.com.br/wp-content/uploads/2025/05/Looke-Google-Apple-1.png" alt="Looke">
+      <img src="https://gkpb.com.br/wp-content/uploads/2023/11/novo-logo-deezer-viva-a-musica-2.jpg" alt="Deezer">
+      <img src="https://play-lh.googleusercontent.com/4a6R9ChCmwDvNHEncALcZe6BAUq3UpINqsC4nXpCTBXmEJwo3EY6yJFyoj9UCWeDsevTbBOpdt-PTH-xQfWQbA" alt="ExitLag">
+      <img src="https://blogdehollywood.b-cdn.net/wp-content/uploads/2020/12/hbo-max-logo.jpg" alt="HBO Max">
+      <img src="https://t.ctcdn.com.br/spMM1aS0iCEIStCRdXpOeCTNQIg=/1024x576/smart/i874303.png" alt="Disney+">
+      <img src="https://lumenfibra.com.br/wp-content/uploads/2025/08/Sky.png" alt="Sky+">
+      <img src="https://ouronet.com.br/wp-content/uploads/2025/05/Looke-Google-Apple-1.png" alt="Looke">
+      <img src="https://gkpb.com.br/wp-content/uploads/2023/11/novo-logo-deezer-viva-a-musica-2.jpg" alt="Deezer">
+      <img src="https://play-lh.googleusercontent.com/4a6R9ChCmwDvNHEncALcZe6BAUq3UpINqsC4nXpCTBXmEJwo3EY6yJFyoj9UCWeDsevTbBOpdt-PTH-xQfWQbA" alt="ExitLag">
+    </div>
   </div>
 </div>
 
@@ -138,29 +147,35 @@
 
 <section id="produto">
   <div class="wrap">
-    <div class="cinematic reveal">
-      <div>
-        <div class="eyebrow">Como funciona</div>
-        <h2>Cadastre-se em minutos.<br>Conecte-se em dias.</h2>
-        <p>Escolha sua localidade, veja o plano disponível pra sua região, marque sua localização no mapa e pronto — nossa equipe entra em contato pra agendar a instalação.</p>
-        <button class="btn" style="margin-top:28px;" onclick="abrirModal()">Seja nosso cliente</button>
+    <div class="two-col-cards">
+      <div class="cinematic reveal">
+        <div>
+          <div class="eyebrow">Como funciona</div>
+          <h2>Cadastre-se em minutos.<br>Conecte-se em dias.</h2>
+          <p>Escolha sua localidade, veja o plano disponível pra sua região, marque sua localização no mapa e pronto — nossa equipe entra em contato pra agendar a instalação.</p>
+          <button class="btn" style="margin-top:28px;" onclick="abrirModalGenerico('modalCadastro')">Seja nosso cliente</button>
+        </div>
+        <div class="cinematic-visual"></div>
       </div>
-      <div class="cinematic-visual"></div>
+
+      <div class="speedtest-card reveal">
+        <img src="https://i.ibb.co/1xGvZfb/teste-de-velocidade-da-internet.png" alt="Speed Test" class="speedtest-icon">
+        <div class="eyebrow">Teste sua conexão</div>
+        <h2>Meça a velocidade<br>da sua internet agora</h2>
+        <p>Descubra se você está recebendo a velocidade contratada no seu plano.</p>
+        <a class="btn" href="https://www.speedtest.net/" target="_blank" rel="noopener noreferrer">Fazer Speed Test</a>
+      </div>
     </div>
   </div>
 </section>
 
 <section id="numeros">
   <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">Resultados</div>
-      <h2>Números que falam<br>por si só</h2>
-    </div>
     <div class="stats">
-      <div class="reveal"><div class="stat-num gradient-text">20+</div><div class="stat-label">localidades atendidas</div></div>
-      <div class="reveal"><div class="stat-num gradient-text">1GB</div><div class="stat-label">velocidade máxima disponível</div></div>
-      <div class="reveal"><div class="stat-num gradient-text">4.9/5</div><div class="stat-label">satisfação média</div></div>
-      <div class="reveal"><div class="stat-num gradient-text">100%</div><div class="stat-label">suporte local</div></div>
+      <div class="reveal"><div class="stat-num gradient-text">+1000</div><div class="stat-label">Clientes atendidos em nossa região</div></div>
+      <div class="reveal"><div class="stat-num gradient-text">1000MB</div><div class="stat-label">Velocidade Máxima Disponível</div></div>
+      <div class="reveal"><div class="stat-num gradient-text">+20</div><div class="stat-label">Regiões Disponível</div></div>
+      <div class="reveal"><div class="stat-num gradient-text">100%</div><div class="stat-label">Fibra Óptica</div></div>
     </div>
   </div>
 </section>
@@ -259,24 +274,31 @@
   <div class="wrap">
     <div class="footer-grid">
       <div>
-        <a href="#" class="logo"><img src="https://i.supaimg.com/12820c3b-da0c-4cbf-86c0-12ae6f6217c6.png" alt="Logo Atos Telecom" class="logo-img"></a>
+        <a href="#topo" class="logo"><img src="https://i.supaimg.com/12820c3b-da0c-4cbf-86c0-12ae6f6217c6.png" alt="Logo Atos Telecom" class="logo-img"></a>
         <p style="color:var(--text-muted); font-size:14px; margin-top:16px; max-width:260px;">Internet de alta velocidade para a cidade e para o campo.</p>
       </div>
       <div>
-        <h4>Produto</h4>
-        <a href="#recursos">Recursos</a>
-        <a href="#produto">Como funciona</a>
+        <h4>Navegação</h4>
+        <a href="#topo">Início</a>
         <a href="#planos">Planos</a>
+        <a href="javascript:void(0)" onclick="abrirModalGenerico('modalSobre')">Quem Somos Nós</a>
+        <a href="javascript:void(0)" onclick="abrirModalGenerico('modalContato')">Contato</a>
       </div>
       <div>
-        <h4>Empresa</h4>
-        <a href="https://atostelecom.com.br/" target="_blank" rel="noopener noreferrer">Site institucional</a>
-        <a href="#">Sobre nós</a>
-        <a href="#">Contato</a>
+        <h4>Atendimento</h4>
+        <p style="color:var(--text-light); font-size:14px; line-height:1.8; opacity:.85;">
+          Segunda a sexta<br>08h às 12h · 14h às 18h<br><br>
+          Sábado<br>08h às 12h
+        </p>
       </div>
       <div>
         <h4>Contato</h4>
-        <a href="mailto:contato@atostelecom.com.br">contato@atostelecom.com.br</a>
+        <a href="https://wa.me/5569999162431" target="_blank" rel="noopener noreferrer">(69) 9 9916-2431</a>
+        <a href="mailto:atostelecom.net@gmail.com">atostelecom.net@gmail.com</a>
+        <a href="https://www.instagram.com/atos_telecom?igsh=MW5vZHhwbmgzZnVsZg==" target="_blank" rel="noopener noreferrer" class="instagram-link">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram">
+          Siga no Instagram
+        </a>
       </div>
     </div>
     <div class="footer-bottom">
@@ -285,7 +307,57 @@
   </div>
 </footer>
 
+<!-- BOTÃO FLUTUANTE DO WHATSAPP -->
+<a href="https://wa.me/5569999162431" target="_blank" rel="noopener noreferrer" class="whatsapp-float" aria-label="Falar no WhatsApp">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/500px-WhatsApp.svg.png" alt="WhatsApp">
+</a>
+
 <!-- ============ MODAL DE CADASTRO ============ -->
+<!-- ============ MODAL: QUEM SOMOS NÓS ============ -->
+<div class="modal-overlay" id="modalSobre">
+  <div class="modal-card modal-card-small">
+    <button class="modal-close" onclick="fecharModalGenerico('modalSobre')" aria-label="Fechar">✕</button>
+    <div class="modal-header">
+      <h2>Quem <span class="gradient-text">somos nós</span></h2>
+    </div>
+    <div class="modal-body-text">
+      <p>A Atos Telecom leva internet de alta velocidade para famílias e empresas na cidade e na zona rural, com instalação rápida e suporte de verdade. [Texto de exemplo — substitua pelo texto real da empresa quando quiser.]</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: CONTATO ============ -->
+<div class="modal-overlay" id="modalContato">
+  <div class="modal-card modal-card-small">
+    <button class="modal-close" onclick="fecharModalGenerico('modalContato')" aria-label="Fechar">✕</button>
+    <div class="modal-header">
+      <h2>Fale <span class="gradient-text">conosco</span></h2>
+    </div>
+    <div class="contact-list">
+      <a href="https://wa.me/5569999162431" target="_blank" rel="noopener noreferrer" class="contact-item">
+        <img src="https://portais.univasf.edu.br/programadegestao/imagens/icon-whatsapp.png/@@images/image.png" alt="WhatsApp">
+        <span>(69) 9 9916-2431</span>
+      </a>
+      <a href="mailto:atostelecom.net@gmail.com" class="contact-item">
+        <img src="https://cdn-icons-png.flaticon.com/512/2989/2989993.png" alt="E-mail">
+        <span>atostelecom.net@gmail.com</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: ÁREA DO CLIENTE ============ -->
+<div class="modal-overlay" id="modalAreaCliente">
+  <div class="modal-card">
+    <button class="modal-close" onclick="fecharModalGenerico('modalAreaCliente')" aria-label="Fechar">✕</button>
+    <div class="modal-header" style="padding-bottom:16px;">
+      <h2>Área do <span class="gradient-text">Cliente</span></h2>
+      <p>Se a página não carregar aqui dentro, <a href="https://cliente.atostelecom.com.br/central_assinante_web/login" target="_blank" rel="noopener noreferrer" style="color:var(--accent-orange); text-decoration:underline;">clique aqui para abrir em uma nova aba</a>.</p>
+    </div>
+    <iframe src="https://cliente.atostelecom.com.br/central_assinante_web/login" class="area-cliente-iframe" title="Área do Cliente"></iframe>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modalCadastro">
   <div class="modal-card">
     <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">✕</button>
