@@ -257,11 +257,10 @@ section{padding:120px 0;}
   margin-bottom:22px;
 }
 
-/* CARD "SOBRE" (texto + imagem com esmaecimento) */
+/* CARD "SOBRE" (agora sem "card": texto + imagem soltos na seção) */
 .about-card{
-  background:var(--bg-panel);
-  border:1px solid var(--border-soft);
-  border-radius:24px;
+  background:transparent;
+  border:none;
   display:grid;
   grid-template-columns:1.15fr 1fr;
   align-items:stretch;
@@ -269,19 +268,26 @@ section{padding:120px 0;}
   height:300px;
 }
 .about-card-text{
-  padding:24px 40px;
+  padding:24px 40px 24px 0;
   display:flex;
   flex-direction:column;
   justify-content:center;
   gap:12px;
   overflow:hidden;
 }
-.about-card-text p{color:var(--text-light); font-size:22px; line-height:1.5; font-weight:500;}
+.about-card-text p{
+  color:var(--text-light);
+  font-family:'Anton', sans-serif;
+  font-size:22px;
+  line-height:1.5;
+  font-weight:400;
+  letter-spacing:0.01em;
+}
 .about-card-image{
   position:relative;
   height:100%;
   overflow:hidden;
-  background:var(--bg-panel);
+  border-radius:24px;
 }
 .about-card-image img{
   width:100%; height:100%;
@@ -294,21 +300,21 @@ section{padding:120px 0;}
   content:"";
   position:absolute; inset:0;
   background:
-    linear-gradient(to right, var(--bg-panel), transparent 18%),
-    linear-gradient(to bottom, rgba(11,10,20,0.3), transparent 20%, transparent 80%, rgba(11,10,20,0.3)),
-    linear-gradient(to top, rgba(11,10,20,0.35), transparent 30%);
+    linear-gradient(to right, var(--bg-deep), transparent 22%),
+    linear-gradient(to bottom, rgba(11,10,20,0.4), transparent 22%, transparent 78%, rgba(11,10,20,0.4)),
+    linear-gradient(to top, rgba(11,10,20,0.4), transparent 30%);
   pointer-events:none;
 }
 
 @media(max-width:900px){
   .about-card{grid-template-columns:1fr; height:auto;}
-  .about-card-text{padding:26px 24px;}
-  .about-card-text p{font-size:18px;}
+  .about-card-text{padding:0 0 22px;}
+  .about-card-text p{font-size:19px;}
   .about-card-image{height:180px;}
   .about-card-image::before{
     background:
-      linear-gradient(to bottom, var(--bg-panel), transparent 18%),
-      linear-gradient(to top, rgba(11,10,20,0.35), transparent 25%);
+      linear-gradient(to bottom, var(--bg-deep), transparent 18%),
+      linear-gradient(to top, rgba(11,10,20,0.4), transparent 25%);
   }
 }
 
