@@ -64,10 +64,10 @@
     </div>
 
     <div class="scroll-cards-panel" id="scrollCardsPanel">
-      <div class="scroll-card">
+      <div class="scroll-card scroll-card-clickable" onclick="abrirModalGenerico('modalBoleto')" role="button" tabindex="0">
         <div class="feature-icon"></div>
-        <h3>Instalação rápida</h3>
-        <p>Agendamos assim que seu cadastro é aprovado.</p>
+        <h3>2ª Via da Fatura Rápida</h3>
+        <p>Consulte e pague seu boleto em segundos, direto pelo CPF.</p>
       </div>
       <div class="scroll-card">
         <div class="feature-icon"></div>
@@ -301,6 +301,49 @@
   </div>
 </div>
 
+<!-- ============ MODAL: 2ª VIA DA FATURA (consulta de boleto por CPF) ============ -->
+<div class="modal-overlay" id="modalBoleto">
+  <div class="modal-card modal-card-small">
+    <button class="modal-close" onclick="fecharModalGenerico('modalBoleto')" aria-label="Fechar">✕</button>
+    <div class="modal-header">
+      <h2>2ª Via da <span class="gradient-text">Fatura</span></h2>
+      <p>Digite o CPF do titular para consultar sua fatura e pagar via PIX.</p>
+    </div>
+    <div class="boleto-body">
+      <div class="boleto-campo">
+        <label for="boletoCpf">CPF</label>
+        <input id="boletoCpf" type="text" maxlength="14" placeholder="000.000.000-00">
+      </div>
+      <button id="boletoConsultarBtn" class="btn boleto-btn-consultar">Consultar</button>
+
+      <div id="boletoLoading" class="boleto-loading">Consultando...</div>
+      <div id="boletoErro" class="boleto-erro"></div>
+
+      <div id="boletoResultado" class="boleto-resultado">
+        <div class="boleto-linha"><span>Cliente</span><strong id="boletoCliente"></strong></div>
+        <div class="boleto-linha"><span>Valor</span><strong id="boletoValor"></strong></div>
+        <div class="boleto-linha"><span>Vencimento</span><strong id="boletoVencimento"></strong></div>
+        <div class="boleto-linha"><span>Status</span><strong id="boletoStatus"></strong></div>
+
+        <div class="boleto-pix">
+          <h3>QR Code PIX</h3>
+          <img id="boletoQrcode" alt="QR Code PIX">
+        </div>
+
+        <div class="boleto-copia">
+          <textarea id="boletoPix" readonly></textarea>
+          <button id="boletoCopiarPix" class="btn btn-ghost boleto-btn-copiar">Copiar PIX</button>
+        </div>
+
+        <div class="boleto-copia">
+          <textarea id="boletoLinhaDigitavel" readonly></textarea>
+          <button id="boletoCopiarLinha" class="btn btn-ghost boleto-btn-copiar">Copiar Linha Digitável</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modalCadastro">
   <div class="modal-card">
     <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">✕</button>
@@ -525,5 +568,6 @@
 <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 <script src="script.js"></script>
 <script src="form.js"></script>
+<script src="boleto.js"></script>
 </body>
 </html>
