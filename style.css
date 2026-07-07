@@ -393,8 +393,9 @@ nav {
   }
 
   .hero-layer {
-    padding: 0 24px;
     justify-content: flex-start;
+    align-items: flex-start;
+    padding: 95px 24px 0;
   }
 
   .hero-text-col {
@@ -403,8 +404,25 @@ nav {
     padding-left: 0;
   }
 
+  .hero-layer h1 {
+    font-size: clamp(42px, 12vw, 58px);
+    line-height: 0.92;
+  }
+
+  .hero-layer p.sub {
+    margin-top: 18px;
+    font-size: 16px;
+  }
+
+  .hero-ctas {
+    margin-top: 22px;
+  }
+
   .hero-bg-image {
-    object-position: 70% center;
+    object-fit: cover;
+    object-position: 82% top;
+    transform: scale(0.82);
+    transform-origin: right top;
   }
 
   .hero-layer::after {
@@ -413,10 +431,11 @@ nav {
     inset: 0;
     z-index: 1;
     background: linear-gradient(
-      100deg,
-      rgba(11, 10, 20, 0.92) 0%,
-      rgba(11, 10, 20, 0.75) 55%,
-      rgba(11, 10, 20, 0.35) 85%
+      90deg,
+      rgba(11, 10, 20, 1) 0%,
+      rgba(11, 10, 20, 0.95) 45%,
+      rgba(11, 10, 20, 0.55) 70%,
+      transparent 100%
     );
     pointer-events: none;
   }
