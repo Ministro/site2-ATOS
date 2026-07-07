@@ -1,23 +1,29 @@
 // ===== HEADER SCROLL =====
-const header = document.getElementById('header');
-window.addEventListener('scroll', () => {
-  header.classList.toggle('scrolled', window.scrollY > 40);
+const header = document.getElementById("header");
+window.addEventListener("scroll", () => {
+  header.classList.toggle("scrolled", window.scrollY > 40);
 });
 
 // ===== REVEAL ON SCROLL =====
-const revealEls = document.querySelectorAll('.reveal');
-const io = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
-  });
-}, { threshold: 0.15 });
-revealEls.forEach(el => io.observe(el));
+const revealEls = document.querySelectorAll(".reveal");
+const io = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add("visible");
+        io.unobserve(e.target);
+      }
+    });
+  },
+  { threshold: 0.15 }
+);
+revealEls.forEach((el) => io.observe(el));
 
 // ===== CONTAGEM ANIMADA DOS NÚMEROS (Resultados) =====
 function animarContagem(el) {
   const target = parseInt(el.dataset.target, 10) || 0;
-  const prefix = el.dataset.prefix || '';
-  const suffix = el.dataset.suffix || '';
+  const prefix = el.dataset.prefix || "";
+  const suffix = el.dataset.suffix || "";
   const duration = 1100;
   const start = performance.now();
 
@@ -32,55 +38,68 @@ function animarContagem(el) {
   }
   requestAnimationFrame(passo);
 }
-const statObserver = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      animarContagem(entry.target);
-      statObserver.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.4 });
-document.querySelectorAll('.stat-num[data-target]').forEach((el) => statObserver.observe(el));
+const statObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        animarContagem(entry.target);
+        statObserver.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.4 }
+);
+document
+  .querySelectorAll(".stat-num[data-target]")
+  .forEach((el) => statObserver.observe(el));
 
 // ===== PLAN TABS (Urbano / Rural) =====
 function trocarPlanoTab(target, btn) {
-  document.querySelectorAll('.plan-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('planos-urbano').style.display = target === 'urbano' ? 'grid' : 'none';
-  document.getElementById('planos-rural').style.display = target === 'rural' ? 'grid' : 'none';
+  document
+    .querySelectorAll(".plan-tab")
+    .forEach((t) => t.classList.remove("active"));
+  btn.classList.add("active");
+  document.getElementById("planos-urbano").style.display =
+    target === "urbano" ? "grid" : "none";
+  document.getElementById("planos-rural").style.display =
+    target === "rural" ? "grid" : "none";
 }
 
 // ===== PRELOADER (espera os primeiros frames carregarem) =====
-const preloaderProgressEl = document.getElementById('preloaderProgress');
+const preloaderProgressEl = document.getElementById("preloaderProgress");
 let framesReadyForPreloader = false;
 let pageLoaded = false;
 
 function tryHidePreloader() {
-  const preloader = document.getElementById('preloader');
+  const preloader = document.getElementById("preloader");
   if (!preloader) return;
   if (pageLoaded && framesReadyForPreloader) {
-    preloader.classList.add('hidden');
+    preloader.classList.add("hidden");
   }
 }
-window.addEventListener('load', () => {
+window.addEventListener("load", () => {
   pageLoaded = true;
   setTimeout(tryHidePreloader, 400); // segura um mínimo pra animação da logo aparecer
 });
 // trava de segurança: nunca deixa o preloader preso pra sempre
-setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
+setTimeout(() => {
+  framesReadyForPreloader = true;
+  tryHidePreloader();
+}, 6000);
 
 // ===== SEQUÊNCIA DE IMAGENS CONTROLADA PELO SCROLL + CARDS SUBINDO POR CIMA =====
 // Os frames ficam em assets/frames/scroll-video_000001.webp até scroll-video_0000XX.webp
 // >>> AJUSTE ESSE NÚMERO para a quantidade real de frames que você gerar <<<
 (function () {
-  const canvas = document.getElementById('scrollCanvas');
-  const section = document.getElementById('scrollVideoSection');
-  const cardsPanel = document.getElementById('scrollCardsPanel');
+  const canvas = document.getElementById("scrollCanvas");
+  const section = document.getElementById("scrollVideoSection");
+  const cardsPanel = document.getElementById("scrollCardsPanel");
   if (!canvas || !section) return;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
 
   const FRAME_COUNT = 150; // <-- troque para o número de frames que você gerar
-  const FRAME_PATH = (i) => `assets/frames/scroll-video_${String(i).padStart(6, '0')}.webp`;
+  const FRAME_PATH = (i) =>
+    `assets/frames/scroll-video_${String(i).padStart(6, "0")}.webp`;
   const PREFETCH_RADIUS = 12; // quantos frames pra frente/trás ficam sempre pré-carregados
 
   const images = new Array(FRAME_COUNT).fill(null);
@@ -125,7 +144,9 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
     if (bgIndex > FRAME_COUNT) return;
     ensureLoaded(bgIndex);
     bgIndex++;
-    (window.requestIdleCallback || ((cb) => setTimeout(cb, 60)))(backgroundFill);
+    (window.requestIdleCallback || ((cb) => setTimeout(cb, 60)))(
+      backgroundFill
+    );
   }
 
   ensureLoaded(1); // primeiro frame carrega imediatamente (aparece rápido)
@@ -145,11 +166,15 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
       lastDrawnIndex = index;
     }
 
-    const cw = canvas.width, ch = canvas.height;
-    const iw = img.naturalWidth, ih = img.naturalHeight;
+    const cw = canvas.width,
+      ch = canvas.height;
+    const iw = img.naturalWidth,
+      ih = img.naturalHeight;
     const scale = Math.max(cw / iw, ch / ih); // comportamento tipo object-fit:cover
-    const dw = iw * scale, dh = ih * scale;
-    const dx = (cw - dw) / 2, dy = (ch - dh) / 2;
+    const dw = iw * scale,
+      dh = ih * scale;
+    const dx = (cw - dw) / 2,
+      dy = (ch - dh) / 2;
     ctx.clearRect(0, 0, cw, ch);
     ctx.drawImage(img, dx, dy, dw, dh);
   }
@@ -160,19 +185,23 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
     canvas.height = canvas.clientHeight * dpr;
     draw(lastDrawnIndex);
   }
-  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener("resize", resizeCanvas);
   resizeCanvas();
 
-  const heroLayer = document.getElementById('heroLayer');
-  const cards = cardsPanel ? Array.from(cardsPanel.querySelectorAll('.scroll-card')) : [];
-  const ctaBtn = cardsPanel ? cardsPanel.querySelector('.btn') : null;
+  const heroLayer = document.getElementById("heroLayer");
+  const cards = cardsPanel
+    ? Array.from(cardsPanel.querySelectorAll(".scroll-card"))
+    : [];
+  const ctaBtn = cardsPanel ? cardsPanel.querySelector(".btn") : null;
   const staggerItems = ctaBtn ? [...cards, ctaBtn] : cards;
 
   const HERO_FADE_END = 0.12; // % do scroll em que o hero termina de desaparecer
   const CARDS_PHASE_START = 0.55;
   const SMOOTHING = 0.18;
 
-  function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
+  function clamp(v, min, max) {
+    return Math.min(Math.max(v, min), max);
+  }
 
   let smoothedProgress = 0;
   let heroInteractive = true;
@@ -182,12 +211,16 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
     const scrollableDistance = section.offsetHeight - window.innerHeight;
 
     if (scrollableDistance > 0) {
-      let progress = (-rect.top) / scrollableDistance;
+      let progress = -rect.top / scrollableDistance;
       progress = clamp(progress, 0, 1);
 
       // o vídeo avança do início ao fim do scroll da seção e NUNCA para
       smoothedProgress += (progress - smoothedProgress) * SMOOTHING;
-      const frameIndex = clamp(Math.round(smoothedProgress * (FRAME_COUNT - 1)) + 1, 1, FRAME_COUNT);
+      const frameIndex = clamp(
+        Math.round(smoothedProgress * (FRAME_COUNT - 1)) + 1,
+        1,
+        FRAME_COUNT
+      );
       draw(frameIndex);
       prefetchAround(frameIndex);
 
@@ -199,14 +232,20 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
         const shouldBeInteractive = heroFade < 0.5;
         if (shouldBeInteractive !== heroInteractive) {
           heroInteractive = shouldBeInteractive;
-          heroLayer.style.pointerEvents = heroInteractive ? 'auto' : 'none';
+          heroLayer.style.pointerEvents = heroInteractive ? "auto" : "none";
         }
       }
 
       // cards sobem por cima do vídeo (que continua rodando por baixo)
-      const cardsProgress = clamp((progress - CARDS_PHASE_START) / (1 - CARDS_PHASE_START), 0, 1);
+      const cardsProgress = clamp(
+        (progress - CARDS_PHASE_START) / (1 - CARDS_PHASE_START),
+        0,
+        1
+      );
       if (cardsPanel) {
-        cardsPanel.style.transform = `translateY(${(1 - cardsProgress) * 100}%)`;
+        cardsPanel.style.transform = `translateY(${
+          (1 - cardsProgress) * 100
+        }%)`;
       }
       staggerItems.forEach((el, i) => {
         const start = i * 0.15;
@@ -226,29 +265,36 @@ setTimeout(() => { framesReadyForPreloader = true; tryHidePreloader(); }, 6000);
 function abrirModalGenerico(id) {
   const overlay = document.getElementById(id);
   if (!overlay) return;
-  overlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
-  if (id === 'modalCadastro' && typeof initMapa === 'function') {
+  overlay.classList.add("open");
+  document.body.style.overflow = "hidden";
+  if (id === "modalCadastro" && typeof initMapa === "function") {
     setTimeout(initMapa, 300);
   }
 }
 function fecharModalGenerico(id) {
   const overlay = document.getElementById(id);
-  if (overlay) overlay.classList.remove('open');
-  const algumAberto = document.querySelectorAll('.modal-overlay.open').length > 0;
-  if (!algumAberto) document.body.style.overflow = '';
+  if (overlay) overlay.classList.remove("open");
+  const algumAberto =
+    document.querySelectorAll(".modal-overlay.open").length > 0;
+  if (!algumAberto) document.body.style.overflow = "";
 }
-document.querySelectorAll('.modal-overlay').forEach((overlay) => {
-  overlay.addEventListener('click', (e) => {
+document.querySelectorAll(".modal-overlay").forEach((overlay) => {
+  overlay.addEventListener("click", (e) => {
     if (e.target === overlay) fecharModalGenerico(overlay.id);
   });
 });
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.modal-overlay.open').forEach((overlay) => fecharModalGenerico(overlay.id));
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    document
+      .querySelectorAll(".modal-overlay.open")
+      .forEach((overlay) => fecharModalGenerico(overlay.id));
   }
 });
 
 // aliases para manter compatibilidade com os botões já existentes ("Seja nosso cliente")
-function abrirModal() { abrirModalGenerico('modalCadastro'); }
-function fecharModal() { fecharModalGenerico('modalCadastro'); }
+function abrirModal() {
+  abrirModalGenerico("modalCadastro");
+}
+function fecharModal() {
+  fecharModalGenerico("modalCadastro");
+}
