@@ -1669,3 +1669,32 @@ footer {
     padding: 16px 0;
   }
 }
+
+/* ============ MODAL: TESTE DE VELOCIDADE ============ */
+
+.speed-body {
+  width:100%;
+  height:calc(100% - 90px);
+  overflow:hidden;
+}
+
+.speed-body iframe {
+  width:100%;
+  height:100%;
+  border:0;
+}
+
+
+.speed-modal-card {
+  max-width:1100px;
+  height:85vh;
+}
+
+
+@media(max-width:600px){
+
+  .speed-modal-card{
+    height:90vh;
+  }
+
+}
