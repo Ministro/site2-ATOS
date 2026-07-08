@@ -242,6 +242,3 @@ function copiar(id) {
   navigator.clipboard.writeText(el.value).catch(() => {
     document.execCommand("copy");
   });
-}
-
-
