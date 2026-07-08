@@ -346,3 +346,22 @@ function abrirModal() {
 function fecharModal() {
   fecharModalGenerico("modalCadastro");
 }
+
+function abrirSpeedTest(){
+
+    abrirModalGenerico('modalSpeed');
+
+    const iframe = document.getElementById("speedIframe");
+    const loading = document.getElementById("speedLoading");
+
+
+    iframe.src = "https://openspeedtest.com/speedtest";
+
+
+    setTimeout(()=>{
+
+        loading.style.display="none";
+
+    },2500);
+
+}
