@@ -1,3 +1,51 @@
+// ===== FAIXA COM NOMES DAS REGIÕES (carrossel infinito) =====
+(function () {
+  const track = document.getElementById("regiaoMarqueeTrack");
+  if (!track) return;
+
+  const regioes = [
+    "Candeias do Jamari",
+    "Setor chacareiro Após Cemitério",
+    "Setor chacareiro Antes do Cemitério",
+    "Green-PK",
+    "Pamus",
+    "55A",
+    "55B",
+    "BR 364-Cuiba",
+    "BR 364-PVH",
+    "Rancho Alegre",
+    "BR 364 (Cuiabá, Após o Silos)",
+    "BR 364 KM 50 (Cinquentinha)",
+    "Corpo Dourado",
+    "Santa Luzia",
+    "Setor Industrial PVH",
+    "Bacia Leiteira Bom Jesus",
+    "Bacia Leiteira Ramal do Boto",
+    "Bacia Leiteira Ramal da Fortuna",
+    "Bairro 13 / Castanheiras",
+    "3 Piquiás",
+    "Bairro Novo de Candeias",
+    "Linha do Caju",
+  ];
+
+  const REPEATS = 3; // repete a lista pra garantir loop sem espaço vazio em telas largas
+  let html = "";
+  for (let r = 0; r < REPEATS; r++) {
+    regioes.forEach((nome) => {
+      html += `<span class="regiao-pill">${nome}</span>`;
+    });
+  }
+  track.innerHTML = html;
+})();
+
+// ===== MENU MOBILE (hamburguer) =====
+function toggleMobileMenu() {
+  document.getElementById("mobileMenu").classList.toggle("open");
+}
+function fecharMobileMenu() {
+  document.getElementById("mobileMenu").classList.remove("open");
+}
+
 // ===== HEADER SCROLL =====
 const header = document.getElementById("header");
 window.addEventListener("scroll", () => {
@@ -24,7 +72,7 @@ function animarContagem(el) {
   const target = parseInt(el.dataset.target, 10) || 0;
   const prefix = el.dataset.prefix || "";
   const suffix = el.dataset.suffix || "";
-  const duration = 2800;
+  const duration = 2700;
   const start = performance.now();
 
   function passo(now) {
