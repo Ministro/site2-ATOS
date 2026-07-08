@@ -58,9 +58,37 @@
             rel="noopener noreferrer"
             >Área do Cliente</a
           >
-          <button class="menu-toggle">☰</button>
+          <button
+            class="menu-toggle"
+            id="menuToggle"
+            onclick="toggleMobileMenu()"
+            aria-label="Abrir menu"
+          >
+            ☰
+          </button>
         </div>
       </nav>
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="#topo" onclick="fecharMobileMenu()">Início</a>
+        <a href="#planos" onclick="fecharMobileMenu()">Planos</a>
+        <a
+          href="javascript:void(0)"
+          onclick="fecharMobileMenu(); abrirModalGenerico('modalSobre')"
+          >Quem Somos Nós</a
+        >
+        <a
+          href="javascript:void(0)"
+          onclick="fecharMobileMenu(); abrirModalGenerico('modalContato')"
+          >Contato</a
+        >
+        <a
+          class="btn"
+          href="https://cliente.atostelecom.com.br/central_assinante_web/login"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Área do Cliente</a
+        >
+      </div>
     </header>
 
     <!-- ============ HERO + VÍDEO CONTROLADO PELO SCROLL ============ -->
@@ -78,8 +106,8 @@
           />
           <div class="hero-text-col">
             <h1 class="hero-in hero-in-1">
-              Internet que <span class="gradient-text">chega</span><br />onde
-              você está
+              Internet que<br /><span class="gradient-text">chega</span
+              ><br />onde você está
             </h1>
             <p class="sub hero-in hero-in-2">
               Fibra de alta velocidade para a cidade e conexão de qualidade para
@@ -245,6 +273,9 @@
         <div class="section-head reveal">
           <div class="eyebrow">Planos</div>
           <h2>Internet rápida<br />pra onde você estiver</h2>
+        </div>
+
+        <div class="plan-tabs-row">
           <div class="plan-tabs">
             <button
               class="plan-tab active"
@@ -261,6 +292,9 @@
               Planos Rurais
             </button>
           </div>
+          <button class="btn" onclick="abrirModalGenerico('modalRegiao')">
+            Consulte sua região
+          </button>
         </div>
 
         <div class="pricing-grid" id="planos-urbano">
@@ -355,6 +389,14 @@
         </div>
       </div>
     </section>
+
+    <div class="regiao-strip">
+      <div class="marquee">
+        <div class="marquee-track" id="regiaoMarqueeTrack">
+          <!-- preenchido via JS (script.js) com os nomes das localidades -->
+        </div>
+      </div>
+    </div>
 
     <section>
       <div class="wrap">
@@ -525,6 +567,45 @@
             />
             <span>atostelecom.net@gmail.com</span>
           </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ MODAL: CONSULTE SUA REGIÃO ============ -->
+    <div class="modal-overlay" id="modalRegiao">
+      <div class="modal-card modal-card-small">
+        <button
+          class="modal-close"
+          onclick="fecharModalGenerico('modalRegiao')"
+          aria-label="Fechar"
+        >
+          ✕
+        </button>
+        <div class="modal-header">
+          <h2>Consulte sua <span class="gradient-text">região</span></h2>
+          <p>
+            Digite o nome do seu bairro ou localidade para ver planos e valores
+            disponíveis.
+          </p>
+        </div>
+        <div class="regiao-body">
+          <div class="regiao-campo">
+            <input
+              id="regiaoBusca"
+              type="text"
+              placeholder="Ex: green, candeias, 55a"
+            />
+            <button id="regiaoBtnBuscar" class="btn regiao-btn-buscar">
+              Buscar
+            </button>
+          </div>
+          <div id="regiaoResultado" class="regiao-resultado"></div>
+          <button
+            id="regiaoBtnImprimir"
+            class="btn btn-ghost regiao-btn-imprimir"
+          >
+            🖨️ Imprimir
+          </button>
         </div>
       </div>
     </div>
@@ -932,5 +1013,6 @@
     <script src="script.js"></script>
     <script src="form.js"></script>
     <script src="boleto.js"></script>
+    <script src="regiao.js"></script>
   </body>
 </html>
