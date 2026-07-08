@@ -239,6 +239,10 @@ function copiar(id) {
   const el = document.getElementById(id);
   el.select();
   el.setSelectionRange(0, 99999);
+
   navigator.clipboard.writeText(el.value).catch(() => {
     document.execCommand("copy");
   });
+}
+
+})(); 
