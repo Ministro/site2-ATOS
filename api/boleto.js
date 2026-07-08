@@ -158,7 +158,7 @@ if (boletos.length === 0) {
       cpf_cnpj: cliente.cnpj_cpf || cliente.cpf_cnpj || cpf
     },
 
-    mensagem: "Nenhuma fatura pendente encontrada. Você está em dia!"
+    mensagem: "Nenhuma fatura pendente encontrada!"
 
   });
 
