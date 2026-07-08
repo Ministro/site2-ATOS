@@ -63,7 +63,7 @@ const io = new IntersectionObserver(
       }
     });
   },
-  { threshold: 0.80 }
+  { threshold: 0.15 }
 );
 revealEls.forEach((el) => io.observe(el));
 
