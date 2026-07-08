@@ -1,3 +1,4 @@
+(function () {
 const cpfInput = document.getElementById("boletoCpf");
 const btn = document.getElementById("boletoConsultarBtn");
 const loading = document.getElementById("boletoLoading");
