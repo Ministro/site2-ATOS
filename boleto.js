@@ -1,8 +1,8 @@
-const cpfInput = document.getElementById("cpf");
-const btn = document.getElementById("consultar");
-const loading = document.getElementById("loading");
-const erroBox = document.getElementById("erro");
-const resultado = document.getElementById("resultado");
+const cpfInput = document.getElementById("boletoCpf");
+const btn = document.getElementById("boletoConsultarBtn");
+const loading = document.getElementById("boletoLoading");
+const erroBox = document.getElementById("boletoErro");
+const resultado = document.getElementById("boletoResultado");
 let clienteAtual = null;
 let verificarPagamentoTimer = null;
 
@@ -72,14 +72,14 @@ async function consultar() {
 }
 
 function preencherResultado(data) {
-  document.getElementById("cliente").textContent = data.cliente.nome || "-";
-  document.getElementById("valor").textContent = formatarValor(data.boleto.valor);
-  document.getElementById("vencimento").textContent = formatarData(data.boleto.vencimento);
-  document.getElementById("status").textContent = traduzirStatus(data.boleto.status);
+  document.getElementById("boletoCliente").textContent = data.cliente.nome || "-";
+  document.getElementById("boletoValor").textContent = formatarValor(data.boleto.valor);
+  document.getElementById("boletoVencimento").textContent = formatarData(data.boleto.vencimento);
+  document.getElementById("boletoStatus").textContent = traduzirStatus(data.boleto.status);
 
-  const qrImg = document.getElementById("qrcode");
-  const pixArea = document.getElementById("pix");
-  const linhaArea = document.getElementById("linha");
+  const qrImg = document.getElementById("boletoQrcode");
+const pixArea = document.getElementById("boletoPix");
+const linhaArea = document.getElementById("boletoLinhaDigitavel");
 
   if (data.pix?.qrcodeDataUri) {
     qrImg.src = data.pix.qrcodeDataUri;
@@ -227,8 +227,12 @@ function traduzirStatus(s) {
   return mapa[s] || s || "-";
 }
 
-document.getElementById("copiarPix").addEventListener("click", () => copiar("pix"));
-document.getElementById("copiarLinha").addEventListener("click", () => copiar("linha"));
+document.getElementById("boletoCopiarPix")
+.addEventListener("click", () => copiar("boletoPix"));
+
+
+document.getElementById("boletoCopiarLinha")
+.addEventListener("click", () => copiar("boletoLinhaDigitavel"));
 
 function copiar(id) {
   const el = document.getElementById(id);
@@ -239,140 +243,4 @@ function copiar(id) {
   });
 }
 
-document.getElementById("imprimirPix").addEventListener("click", imprimirPix);
 
-function imprimirPix() {
-
-    const cliente = document.getElementById("cliente").textContent;
-    const valor = document.getElementById("valor").textContent;
-    const vencimento = document.getElementById("vencimento").textContent;
-    const qr = document.getElementById("qrcode").src;
-
-    const logo = document.querySelector(".logo").src;
-
-    const tela = window.open("", "_blank");
-
-    tela.document.write(`
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
-
-<meta charset="UTF-8">
-
-<title>Imprimir PIX</title>
-
-<style>
-
-body{
-    margin:0;
-    padding:8px;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#fff;
-}
-
-.card{
-    width:100%;
-    max-width:72mm;
-    margin:0 auto;
-    padding:0;
-    box-sizing:border-box;
-}
-
-.logo{
-    width:70px;
-    display:block;
-    margin:0 auto 15px;
-}
-
-.item{
-    padding:10px 0;
-    border-bottom:1px dashed #999;
-}
-
-.label{
-    font-size:13px;
-    color:#555;
-}
-
-.valor{
-    margin-top:3px;
-    font-size:18px;
-    font-weight:bold;
-}
-
-.qr{
-    text-align:center;
-    margin-top:20px;
-}
-
-.qr img{
-    width:170px;
-    height:170px;
-}
-
-@page{
-    size:80mm auto;
-    margin:5mm;
-}
-
-@media print{
-
-body{
-
-margin:0;
-
-}
-
-}
-
-</style>
-
-</head>
-
-<body onload="window.print();window.close();">
-
-<div class="card">
-
-<img class="logo" src="${logo}">
-
-<div class="item">
-
-<div class="label">Cliente</div>
-
-<div class="valor">${cliente}</div>
-
-</div>
-
-<div class="item">
-
-<div class="label">Valor</div>
-
-<div class="valor">${valor}</div>
-
-</div>
-
-<div class="item">
-
-<div class="label">Vencimento</div>
-
-<div class="valor">${vencimento}</div>
-
-</div>
-
-<div class="qr">
-
-<img src="${qr}">
-
-</div>
-
-</div>
-
-</body>
-
-</html>
-`);
-
-    tela.document.close();
-
-}
