@@ -1698,3 +1698,76 @@ footer {
   }
 
 }
+
+.speed-loading{
+
+position:absolute;
+inset:0;
+
+background:#050505;
+
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+
+z-index:5;
+
+}
+
+
+.speed-loading img{
+
+width:130px;
+
+animation:pulseLogo 1.5s infinite;
+
+}
+
+
+.speed-loading h3{
+
+margin-top:25px;
+
+color:white;
+
+font-family:Inter;
+
+}
+
+
+.speed-loader{
+
+width:45px;
+height:45px;
+
+border:4px solid rgba(255,255,255,.2);
+border-top-color:white;
+
+border-radius:50%;
+
+animation:spin .8s linear infinite;
+
+margin-top:20px;
+
+}
+
+
+
+@keyframes spin{
+
+to{
+transform:rotate(360deg);
+}
+
+}
+
+
+
+@keyframes pulseLogo{
+
+50%{
+transform:scale(1.08);
+}
+
+}
