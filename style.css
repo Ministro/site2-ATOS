@@ -1457,6 +1457,62 @@ footer {
   width: 100%;
 }
 
+/*=========================
+      STATUS PAGAMENTO
+==========================*/
+
+.status-sucesso,
+.status-dia {
+
+    margin-top:20px;
+    padding:25px;
+    border-radius:12px;
+    text-align:center;
+    color:#fff;
+
+}
+
+
+.status-sucesso {
+
+    background:#166534;
+
+}
+
+
+.status-dia {
+
+    background:#14532d;
+
+}
+
+
+.status-sucesso h2,
+.status-dia h2 {
+
+    margin:10px 0;
+    font-size:20px;
+
+}
+
+
+.status-sucesso p,
+.status-dia p {
+
+    color:#dcfce7;
+    font-size:14px;
+    line-height:1.5;
+
+}
+
+
+.status-icone {
+
+    font-size:45px;
+    margin-bottom:10px;
+
+}
+
 @media (max-width: 600px) {
   .boleto-body {
     padding: 8px 24px 32px;
