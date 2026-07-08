@@ -24,7 +24,7 @@ function animarContagem(el) {
   const target = parseInt(el.dataset.target, 10) || 0;
   const prefix = el.dataset.prefix || "";
   const suffix = el.dataset.suffix || "";
-  const duration = 1100;
+  const duration = 2800;
   const start = performance.now();
 
   function passo(now) {
