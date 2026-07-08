@@ -102,6 +102,7 @@ export default async function handler(req, res) {
     const cpfFormatado = cpfLimpo.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
 
     // 1. localizar cliente pelo CPF
+    // qtype "cnpj_cpf" e valor COM máscara (000.000.000-00) — confirmado que é assim que esse IXC aceita
     let clienteData;
     try {
       clienteData = await ixcListar(`${baseUrl}/cliente`, {
@@ -122,7 +123,7 @@ export default async function handler(req, res) {
       return res.status(404).json({ erro: "Cliente não encontrado" });
     }
 
-    // 2. buscar boletos do cliente
+    // 2. buscar boletos do cliente (mesmos parâmetros usados pelo bot, que já funciona)
     let boletosData;
     try {
       boletosData = await ixcListar(`${baseUrl}/fn_areceber`, {
@@ -144,9 +145,24 @@ export default async function handler(req, res) {
     }
 
     const boletos = boletosData?.registros || [];
-    if (boletos.length === 0) {
-      return res.status(404).json({ erro: "Nenhum boleto em aberto encontrado para esse cliente" });
-    }
+
+if (boletos.length === 0) {
+
+  return res.status(200).json({
+
+    emDia: true,
+
+    cliente: {
+      id: cliente.id,
+      nome: cliente.razao || cliente.nome || cliente.fantasia || "-",
+      cpf_cnpj: cliente.cnpj_cpf || cliente.cpf_cnpj || cpf
+    },
+
+    mensagem: "Nenhuma fatura pendente encontrada. Você está em dia!"
+
+  });
+
+}
 
     // ordena por vencimento e prioriza o vencido; senão pega o próximo a vencer
     const hoje = new Date();
@@ -159,6 +175,7 @@ export default async function handler(req, res) {
     const boleto = vencido || ordenados[0];
 
     // 3. buscar o PIX do boleto escolhido
+    // formato de resposta confirmado: { type: "success", pix: { qrCode: { qrcode, imagemQrcode } } }
     let pix = { qrcodeDataUri: null, copiaCola: null };
     try {
       const pixData = await ixcGetPix(baseUrl, boleto.id, auth);
@@ -169,10 +186,11 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json({
-      cliente: {
-        nome: cliente.razao || cliente.nome || cliente.fantasia || "-",
-        cpf_cnpj: cliente.cnpj_cpf || cliente.cpf_cnpj || cpf
-      },
+  cliente: {
+    id: cliente.id,
+    nome: cliente.razao || cliente.nome || cliente.fantasia || "-",
+    cpf_cnpj: cliente.cnpj_cpf || cliente.cpf_cnpj || cpf
+  },
       boleto: {
         id: boleto.id,
         valor: boleto.valor,
@@ -188,6 +206,7 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error(err);
+    // "detalhe" ajuda a debugar agora; depois que estiver tudo ok, pode remover essa linha.
     return res.status(500).json({ erro: "Erro interno", detalhe: err.message });
   }
 }
