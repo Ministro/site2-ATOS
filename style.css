@@ -1961,6 +1961,16 @@ footer {
 }
 
 /* ============ FOOTER (estilo Rockstar) ============ */
+.footer-logo-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+.footer-logo-row img {
+  height: 64px;
+  width: auto;
+  object-fit: contain;
+}
 .footer-band {
   display: flex;
   align-items: center;
