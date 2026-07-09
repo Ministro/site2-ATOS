@@ -1952,3 +1952,10 @@ footer {
 .cta-feature:nth-child(4) {
   transition-delay: 0.55s;
 }
+
+.price-amount {
+    font-family: "SamsungSharp", sans-serif;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0;
+}
