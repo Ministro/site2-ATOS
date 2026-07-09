@@ -63,9 +63,39 @@ const io = new IntersectionObserver(
       }
     });
   },
-  { threshold: 0.50 }
+  { threshold: 0.5 }
 );
 revealEls.forEach((el) => io.observe(el));
+
+// ===== CTA FINAL =====
+
+const ctaObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const cards = document.querySelectorAll(".cta-feature");
+
+        cards.forEach((card, index) => {
+          setTimeout(() => {
+            card.classList.add("visible");
+          }, index * 180);
+        });
+
+        ctaObserver.disconnect();
+      }
+    });
+  },
+
+  {
+    threshold: 0.35,
+  }
+);
+
+const ctaBand = document.querySelector(".cta-band");
+
+if (ctaBand) {
+  ctaObserver.observe(ctaBand);
+}
 
 // ===== CONTAGEM ANIMADA DOS NÚMEROS (Resultados) =====
 function animarContagem(el) {
@@ -347,21 +377,15 @@ function fecharModal() {
   fecharModalGenerico("modalCadastro");
 }
 
-function abrirSpeedTest(){
+function abrirSpeedTest() {
+  abrirModalGenerico("modalSpeed");
 
-    abrirModalGenerico('modalSpeed');
+  const iframe = document.getElementById("speedIframe");
+  const loading = document.getElementById("speedLoading");
 
-    const iframe = document.getElementById("speedIframe");
-    const loading = document.getElementById("speedLoading");
+  iframe.src = "https://openspeedtest.com/speedtest";
 
-
-    iframe.src = "https://openspeedtest.com/speedtest";
-
-
-    setTimeout(()=>{
-
-        loading.style.display="none";
-
-    },2500);
-
+  setTimeout(() => {
+    loading.style.display = "none";
+  }, 2500);
 }
