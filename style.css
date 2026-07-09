@@ -844,6 +844,7 @@ section {
 }
 
 .cta-feature h3 {
+    margin-top: 32px;
     font-family: "SamsungSharp", sans-serif;
     font-size: 17px;
     font-weight: 700;
