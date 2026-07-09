@@ -38,10 +38,14 @@
 .preloader-logo-glow {
   position: absolute;
   inset: -26px;
-  -webkit-mask: url("https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/763ac140-254d-495c-baf7-ba4725c67427.png")
-    center / contain no-repeat;
-  mask: url("https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/763ac140-254d-495c-baf7-ba4725c67427.png")
-    center / contain no-repeat;
+  -webkit-mask-image: url("https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/763ac140-254d-495c-baf7-ba4725c67427.png");
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  mask-image: url("https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/763ac140-254d-495c-baf7-ba4725c67427.png");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
   background: var(--accent-orange);
   filter: blur(20px);
   opacity: 0.4;
@@ -51,10 +55,14 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  -webkit-mask: url("https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/763ac140-254d-495c-baf7-ba4725c67427.png")
-    center / contain no-repeat;
-  mask: url("https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/763ac140-254d-495c-baf7-ba4725c67427.png")
-    center / contain no-repeat;
+  -webkit-mask-image: url("https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/763ac140-254d-495c-baf7-ba4725c67427.png");
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  mask-image: url("https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/763ac140-254d-495c-baf7-ba4725c67427.png");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
 }
 .preloader-logo-gradient {
   position: absolute;
