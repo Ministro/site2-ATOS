@@ -1,3 +1,9 @@
+@font-face{
+    font-family:"SamsungSharp";
+    src:url("fonts/SamsungSharpSans-Bold.otf") format("opentype");
+    font-weight:700;
+    font-style:normal;
+}
 /* ============ PRELOADER ============ */
 .preloader {
   position: fixed;
@@ -840,9 +846,11 @@ section {
 .cta-feature h3 {
   margin-top: 22px;
 
-  font-size: 17px;
+  font-family:"SamsungSharp",sans-serif;
 
-  font-weight: 700;
+    font-size:17px;
+
+    font-weight:700;
 
   color: #fff;
 
