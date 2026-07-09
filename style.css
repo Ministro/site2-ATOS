@@ -852,6 +852,8 @@ section {
 
     font-weight:700;
 
+    text-transform: none;
+
   color: #fff;
 
   transition: 0.35s ease;
