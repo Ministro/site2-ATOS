@@ -698,24 +698,202 @@ section {
   font-size: 14px;
 }
 
-/* CTA BAND */
+/* ===================================================
+   CTA FINAL
+=================================================== */
+
 .cta-band {
-  text-align: center;
-  border-radius: 24px;
-  background: linear-gradient(120deg, #2b1e4f, #7b1f52 45%, #b04a2c);
-  padding: 90px 40px;
   position: relative;
   overflow: hidden;
+
+  padding: 80px 45px;
+
+  border-radius: 26px;
+
+  background: #111118;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  text-align: center;
 }
+
+.cta-band::before {
+  content: "";
+
+  position: absolute;
+
+  top: -180px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  width: 700px;
+  height: 700px;
+
+  background: radial-gradient(
+    circle,
+    rgba(255, 214, 10, 0.18) 0%,
+    rgba(255, 214, 10, 0.08) 35%,
+    transparent 70%
+  );
+
+  pointer-events: none;
+}
+
 .cta-band h2 {
-  font-size: clamp(32px, 5vw, 60px);
-  max-width: 700px;
-  margin: 0 auto;
+  position: relative;
+
+  font-size: clamp(36px, 5vw, 60px);
+
+  margin-bottom: 18px;
+
+  z-index: 2;
 }
+
 .cta-band p {
-  color: rgba(245, 243, 255, 0.8);
-  margin: 20px auto 34px;
-  max-width: 480px;
+  position: relative;
+
+  max-width: 760px;
+
+  margin: 0 auto 55px;
+
+  color: var(--text-muted);
+
+  font-size: 17px;
+
+  line-height: 1.7;
+
+  z-index: 2;
+}
+
+/* ========= FEATURES ========= */
+
+.cta-features {
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 28px;
+
+  z-index: 2;
+}
+
+.cta-feature {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  transition: 0.35s ease;
+}
+
+.cta-icon {
+  width: 105px;
+  height: 105px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #181823;
+
+  border: 1px solid rgba(255, 214, 10, 0.12);
+
+  position: relative;
+
+  transition: 0.35s ease;
+}
+
+.cta-icon::before {
+  content: "";
+
+  position: absolute;
+
+  inset: -12px;
+
+  border-radius: 50%;
+
+  background: #ffd60a;
+
+  filter: blur(28px);
+
+  opacity: 0;
+
+  transition: 0.35s ease;
+
+  z-index: -1;
+}
+
+.cta-icon img {
+  width: 48px;
+
+  transition: 0.35s ease;
+}
+
+.cta-feature h3 {
+  margin-top: 22px;
+
+  font-size: 17px;
+
+  font-weight: 700;
+
+  color: #fff;
+
+  transition: 0.35s ease;
+}
+
+/* ========================= */
+/* HOVER                     */
+/* ========================= */
+
+.cta-feature:hover {
+  transform: translateY(-8px);
+}
+
+.cta-feature:hover .cta-icon {
+  border-color: #ffd60a;
+
+  box-shadow: 0 0 18px rgba(255, 214, 10, 0.25),
+    0 0 45px rgba(255, 214, 10, 0.2);
+}
+
+.cta-feature:hover .cta-icon::before {
+  opacity: 0.55;
+}
+
+.cta-feature:hover img {
+  transform: scale(1.12);
+}
+
+.cta-feature:hover h3 {
+  color: #ffd60a;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 900px) {
+  .cta-features {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .cta-band {
+    padding: 60px 24px;
+  }
+
+  .cta-features {
+    grid-template-columns: 1fr;
+
+    gap: 40px;
+  }
 }
 
 /* FAIXA DE LOGOS (estática, sem animação) */
@@ -1463,54 +1641,37 @@ footer {
 
 .status-sucesso,
 .status-dia {
-
-    margin-top:20px;
-    padding:25px;
-    border-radius:12px;
-    text-align:center;
-    color:#fff;
-
+  margin-top: 20px;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  color: #fff;
 }
-
 
 .status-sucesso {
-
-    background:#166534;
-
+  background: #166534;
 }
-
 
 .status-dia {
-
-    background:#14532d;
-
+  background: #14532d;
 }
-
 
 .status-sucesso h2,
 .status-dia h2 {
-
-    margin:10px 0;
-    font-size:20px;
-
+  margin: 10px 0;
+  font-size: 20px;
 }
-
 
 .status-sucesso p,
 .status-dia p {
-
-    color:#dcfce7;
-    font-size:14px;
-    line-height:1.5;
-
+  color: #dcfce7;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-
 .status-icone {
-
-    font-size:45px;
-    margin-bottom:10px;
-
+  font-size: 45px;
+  margin-bottom: 10px;
 }
 
 @media (max-width: 600px) {
@@ -1674,102 +1835,115 @@ footer {
 
 .speed-body {
   background: #fff;
-  width:100%;
-  height:calc(100% - 90px);
-  overflow:hidden;
+  width: 100%;
+  height: calc(100% - 90px);
+  overflow: hidden;
 }
 
 .speed-body iframe {
-  width:100%;
-  height:100%;
-  border:0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
-
 
 .speed-modal-card {
   background: #fff;
-  max-width:1100px;
-  height:85vh;
+  max-width: 1100px;
+  height: 85vh;
 }
 
-
-@media(max-width:600px){
-
-  .speed-modal-card{
-    height:90vh;
+@media (max-width: 600px) {
+  .speed-modal-card {
+    height: 90vh;
   }
-
 }
 
-.speed-loading{
+.speed-loading {
+  position: absolute;
+  inset: 0;
 
-position:absolute;
-inset:0;
+  background: #050505;
 
-background:#050505;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-
-z-index:5;
-
+  z-index: 5;
 }
 
+.speed-loading img {
+  width: 130px;
 
-.speed-loading img{
-
-width:130px;
-
-animation:pulseLogo 1.5s infinite;
-
+  animation: pulseLogo 1.5s infinite;
 }
 
+.speed-loading h3 {
+  margin-top: 25px;
 
-.speed-loading h3{
+  color: white;
 
-margin-top:25px;
-
-color:white;
-
-font-family:Inter;
-
+  font-family: Inter;
 }
 
+.speed-loader {
+  width: 45px;
+  height: 45px;
 
-.speed-loader{
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top-color: white;
 
-width:45px;
-height:45px;
+  border-radius: 50%;
 
-border:4px solid rgba(255,255,255,.2);
-border-top-color:white;
+  animation: spin 0.8s linear infinite;
 
-border-radius:50%;
-
-animation:spin .8s linear infinite;
-
-margin-top:20px;
-
+  margin-top: 20px;
 }
 
-
-
-@keyframes spin{
-
-to{
-transform:rotate(360deg);
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
+@keyframes pulseLogo {
+  50% {
+    transform: scale(1.08);
+  }
 }
 
+/* ==========================================
+   ANIMAÇÃO DOS CARDS DA CTA
+========================================== */
 
+.cta-feature {
+  opacity: 0;
 
-@keyframes pulseLogo{
-
-50%{
-transform:scale(1.08);
+  transform: translateY(35px);
 }
 
+.cta-feature.visible {
+  opacity: 1;
+
+  transform: translateY(0);
+}
+
+.cta-feature {
+  transition: opacity 0.7s ease, transform 0.7s ease, box-shadow 0.35s ease;
+}
+
+.cta-feature:nth-child(1) {
+  transition-delay: 0.1s;
+}
+
+.cta-feature:nth-child(2) {
+  transition-delay: 0.25s;
+}
+
+.cta-feature:nth-child(3) {
+  transition-delay: 0.4s;
+}
+
+.cta-feature:nth-child(4) {
+  transition-delay: 0.55s;
 }
