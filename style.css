@@ -51,6 +51,19 @@
   opacity: 0.4;
   animation: preloaderGlowPulse 1.8s ease-in-out infinite;
 }
+.preloader-logo-base {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: url("https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/763ac140-254d-495c-baf7-ba4725c67427.png");
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  mask-image: url("https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/763ac140-254d-495c-baf7-ba4725c67427.png");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  background: rgba(255, 217, 61, 0.32);
+}
 .preloader-logo-mask {
   position: absolute;
   inset: 0;
@@ -74,12 +87,15 @@
   margin-left: -130%;
   background: conic-gradient(
     from 0deg,
-    var(--accent-magenta),
-    var(--accent-orange),
-    var(--accent-violet),
-    var(--accent-magenta)
+    transparent 0deg,
+    transparent 250deg,
+    var(--accent-magenta) 278deg,
+    #fffbe0 300deg,
+    var(--accent-orange) 322deg,
+    transparent 355deg,
+    transparent 360deg
   );
-  animation: preloaderSpin 2.4s linear infinite;
+  animation: preloaderSpin 2.2s linear infinite;
 }
 @keyframes preloaderSpin {
   to {
