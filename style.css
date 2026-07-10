@@ -58,7 +58,7 @@
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
   -webkit-mask-size: contain;
-  mask-image: url("");
+  mask-image: url("https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/763ac140-254d-495c-baf7-ba4725c67427.png");
   mask-repeat: no-repeat;
   mask-position: center;
   mask-size: contain;
@@ -1929,12 +1929,41 @@ footer {
   width: 100%;
   height: calc(100% - 90px);
   overflow: hidden;
+  position: relative;
 }
 
 .speed-body iframe {
   width: 100%;
   height: 100%;
   border: 0;
+}
+
+.speed-logo-cover {
+  position: absolute;
+  left: 6%;
+  top: 34%;
+  width: 38%;
+  height: 15%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+.speed-logo-cover img {
+  max-width: 78%;
+  max-height: 78%;
+  object-fit: contain;
+}
+
+@media (max-width: 600px) {
+  .speed-logo-cover {
+    left: 8%;
+    top: 30%;
+    width: 46%;
+    height: 13%;
+  }
 }
 
 .speed-modal-card {
