@@ -22,6 +22,55 @@
       href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
     />
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ============ SCHEMA MARKUP (SEO - sitelinks) ============ -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Atos Telecom",
+        "url": "https://atostelecom.com.br/",
+        "logo": "https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/d2612ca8-1d6f-493f-a6b7-2c593d1fd3e9.png",
+        "sameAs": [
+          "https://www.instagram.com/atos_telecom",
+          "https://wa.me/5569999162431"
+        ],
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Av. Tancredo Neves, 1681 - União",
+          "addressLocality": "Candeias do Jamari",
+          "addressRegion": "RO",
+          "postalCode": "78938-000",
+          "addressCountry": "BR"
+        }
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Atos Telecom",
+        "url": "https://atostelecom.com.br/",
+        "hasPart": [
+          {
+            "@type": "SiteNavigationElement",
+            "name": "Planos",
+            "url": "https://atostelecom.com.br/#planos"
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": "2ª Via da Fatura",
+            "url": "https://atostelecom.com.br/#produto"
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": "Contato",
+            "url": "https://atostelecom.com.br/#contato"
+          }
+        ]
+      }
+    </script>
   </head>
   <body id="topo">
     <div class="preloader" id="preloader">
@@ -51,9 +100,7 @@
             onclick="abrirModalGenerico('modalSobre')"
             >Quem Somos Nós</a
           >
-          <a
-            href="javascript:void(0)"
-            onclick="abrirModalGenerico('modalContato')"
+          <a href="#contato" onclick="abrirModalGenerico('modalContato')"
             >Contato</a
           >
         </div>
@@ -61,6 +108,7 @@
           class="nav-actions"
           style="display: flex; gap: 14px; align-items: center"
         >
+          <a class="btn btn-fatura-rapida" href="#produto">2ª Via Rápida</a>
           <a
             class="btn"
             href="https://cliente.atostelecom.com.br/central_assinante_web/login"
@@ -87,9 +135,15 @@
           >Quem Somos Nós</a
         >
         <a
-          href="javascript:void(0)"
+          href="#contato"
           onclick="fecharMobileMenu(); abrirModalGenerico('modalContato')"
           >Contato</a
+        >
+        <a
+          class="btn btn-fatura-rapida"
+          href="#produto"
+          onclick="fecharMobileMenu()"
+          >2ª Via Rápida</a
         >
         <a
           class="btn"
@@ -302,6 +356,17 @@
         </div>
 
         <div class="pricing-grid" id="planos-urbano">
+          <div
+            class="reveal"
+            style="grid-column: 1 / -1; text-align: center; margin-bottom: 24px"
+          >
+            <button
+              class="btn btn-ghost"
+              onclick="abrirModalGenerico('modalInstalacao')"
+            >
+              Como funciona a instalação?
+            </button>
+          </div>
           <div class="price-card reveal">
             <h3>500MB</h3>
             <div class="price-amount" style="font-size: 20px">
@@ -468,7 +533,7 @@
       </div>
     </section>
 
-    <footer>
+    <footer id="contato">
       <div class="wrap">
         <div class="footer-logo-row reveal">
           <img
@@ -480,12 +545,15 @@
         <div class="footer-band reveal">
           <div class="footer-band-icon">
             <img
-              src="https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/f1256b90-c8c9-4aa4-be60-c4ab65988527.png"
-              alt=""
+              src="https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/e6ddab2d-2d86-4427-a546-16386dc91959.png"
+              alt="Localização"
             />
           </div>
           <div class="footer-band-text">
-            <p>Internet de alta velocidade para a cidade e para o campo.</p>
+            <p>
+              Av. Tancredo Neves, 1681 - União<br />Candeias do Jamari - RO,
+              78938-000
+            </p>
           </div>
           <div class="footer-band-hours">
             <span>Segunda a sexta<br />08h às 12h · 14h às 18h</span>
@@ -525,6 +593,7 @@
         </div>
 
         <div class="footer-bottom">
+          <span class="footer-dev">Desenvolvido por @matheuscs97</span>
           <span
             >© 2026 Atos Comercio e Empreendimentos de Informatica LTDA ME.
             Todos os direitos reservados.</span
@@ -660,6 +729,145 @@
       </div>
     </div>
 
+    <!-- ============ MODAL: COMO FUNCIONA A INSTALAÇÃO (Candeias do Jamari) ============ -->
+    <div class="modal-overlay" id="modalInstalacao">
+      <div class="modal-card modal-card-instalacao">
+        <button
+          class="modal-close"
+          onclick="fecharModalGenerico('modalInstalacao')"
+          aria-label="Fechar"
+        >
+          ✕
+        </button>
+
+        <div class="instalacao-header">
+          <img
+            src="https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/9ed527c4-751a-4e02-ad2b-deba478a3f91.png"
+            alt="Técnico Atos Telecom"
+            class="instalacao-mascote"
+          />
+          <div class="instalacao-titulo-block">
+            <h2>
+              COMO FUNCIONA A<br />
+              <span class="gradient-text">INSTALAÇÃO</span>
+            </h2>
+            <p class="instalacao-subtitulo">
+              Tudo o que você precisa saber antes de contratar.<br />
+              <strong
+                >Valores válidos para a região de Candeias do Jamari.</strong
+              >
+            </p>
+          </div>
+        </div>
+
+        <div class="instalacao-info-banner">
+          <span class="instalacao-info-icone">ℹ️</span>
+          <p>
+            A instalação é feita por nossa equipe técnica especializada, com
+            todo o equipamento necessário para garantir a melhor conexão de
+            internet para você e sua família.
+            <strong>Escolha a opção que melhor atende sua necessidade:</strong>
+          </p>
+        </div>
+
+        <div class="instalacao-comparativo">
+          <div class="instalacao-plano-card com-fidelidade">
+            <div class="instalacao-plano-header">
+              <span class="instalacao-plano-selo">✅</span>
+              <div>
+                <h3>COM <span>FIDELIDADE (12 MESES)</span></h3>
+                <p>Mais economia e estabilidade para você.</p>
+              </div>
+            </div>
+            <div class="instalacao-plano-preco">
+              R$ 100,00
+              <span>à vista no ato da instalação</span>
+            </div>
+            <ul class="instalacao-plano-lista">
+              <li>✅ Permanência mínima de 12 meses</li>
+              <li>✅ Menor custo de instalação</li>
+              <li>✅ Ideal para quem busca economia e estabilidade</li>
+            </ul>
+          </div>
+
+          <div class="instalacao-plano-card sem-fidelidade">
+            <div class="instalacao-plano-header">
+              <span class="instalacao-plano-selo">✅</span>
+              <div>
+                <h3>SEM <span>FIDELIDADE</span></h3>
+                <p>Mais flexibilidade para você.</p>
+              </div>
+            </div>
+            <div class="instalacao-plano-preco">
+              R$ 200,00
+              <span>à vista no ato da instalação</span>
+            </div>
+            <ul class="instalacao-plano-lista">
+              <li>✅ Sem permanência mínima</li>
+              <li>✅ Liberdade para cancelar quando quiser</li>
+              <li>✅ Ideal para quem busca flexibilidade</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="instalacao-incluso">
+          <div class="instalacao-incluso-titulo">
+            <span>🚚</span> O QUE ESTÁ INCLUSO NA INSTALAÇÃO?
+          </div>
+          <div class="instalacao-incluso-grid">
+            <div class="instalacao-incluso-item">
+              <img
+                src="https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/8c7ca048-eff0-4898-a57e-4b915e3d9d0d.png"
+                alt="Configuração completa da sua internet"
+              />
+              <p>Configuração completa da sua internet</p>
+            </div>
+            <div class="instalacao-incluso-item">
+              <img
+                src="https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/d60e2336-357e-4900-b103-5441c3efea67.png"
+                alt="Equipamento em comodato (Wi-Fi)"
+              />
+              <p>Equipamento em comodato (Wi-Fi)</p>
+            </div>
+            <div class="instalacao-incluso-item">
+              <img
+                src="https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/bf853cf4-9d5f-44ad-ade2-e81b89c8ef67.png"
+                alt="Testes de conexão e qualidade"
+              />
+              <p>Testes de conexão e qualidade</p>
+            </div>
+            <div class="instalacao-incluso-item">
+              <img
+                src="https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/82ad558c-e974-4d69-9945-8e057cd11d28.png"
+                alt="Suporte técnico especializado"
+              />
+              <p>Suporte técnico especializado</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="instalacao-agendamento">
+          <span class="instalacao-agendamento-icone">📅</span>
+          <p>
+            <strong>Agendamento rápido:</strong> nossa equipe entrará em contato
+            após a confirmação para agendar o melhor dia e horário. Dúvidas?
+            Fale com nosso atendimento pelo
+            <a
+              href="https://wa.me/5569999162431"
+              target="_blank"
+              rel="noopener noreferrer"
+              >WhatsApp</a
+            >.
+          </p>
+        </div>
+
+        <div class="instalacao-footer">
+          <p>❤️ Nosso compromisso é levar a melhor conexão até você!</p>
+          <span>Atos Telecom • Conectando você ao que importa</span>
+        </div>
+      </div>
+    </div>
+
     <!-- ============ MODAL: 2ª VIA DA FATURA (consulta de boleto por CPF) ============ -->
     <div class="modal-overlay" id="modalBoleto">
       <div class="modal-card modal-card-small">
@@ -764,6 +972,122 @@
       </div>
     </div>
 
+    <!-- ============ MODAL: TRABALHE CONOSCO (envio de currículo) ============ -->
+    <div class="modal-overlay" id="modalCurriculo">
+      <div class="modal-card modal-card-small">
+        <button
+          class="modal-close"
+          onclick="fecharModalGenerico('modalCurriculo')"
+          aria-label="Fechar"
+        >
+          ✕
+        </button>
+        <div class="modal-header">
+          <h2>Trabalhe <span class="gradient-text">Conosco</span></h2>
+          <p>
+            A gente ama contar com quem é de verdade! Deixe seu currículo no
+            nosso banco de talentos.
+          </p>
+        </div>
+
+        <form id="curriculoForm" class="curriculo-body" autocomplete="off">
+          <div class="curriculo-campo">
+            <label for="curriculoVaga">Vaga</label>
+            <select id="curriculoVaga" name="vaga" required>
+              <option value="">Selecione a vaga</option>
+              <option value="Atendimento ao Cliente">
+                Atendimento ao Cliente
+              </option>
+              <option value="Auxiliar de Produção">
+                Auxiliar de Produção
+              </option>
+            </select>
+          </div>
+
+          <div class="curriculo-campo">
+            <label for="curriculoNome">Nome</label>
+            <input type="text" id="curriculoNome" name="nome" required />
+          </div>
+
+          <div class="curriculo-campo">
+            <label for="curriculoEmail">E-mail</label>
+            <input type="email" id="curriculoEmail" name="email" required />
+          </div>
+
+          <div class="curriculo-campo">
+            <label for="curriculoTelefone">Telefone</label>
+            <input
+              type="text"
+              id="curriculoTelefone"
+              name="telefone"
+              maxlength="15"
+              placeholder="(00) 90000-0000"
+              required
+            />
+          </div>
+
+          <div class="curriculo-campo">
+            <label for="curriculoAnexo">Anexo (currículo em PDF)</label>
+            <div class="curriculo-anexo-row">
+              <span id="curriculoAnexoNome" class="curriculo-anexo-nome"
+                >Nenhum arquivo selecionado</span
+              >
+              <button
+                type="button"
+                id="curriculoAnexoBtn"
+                class="btn btn-ghost curriculo-btn-anexo"
+              >
+                Procurar
+              </button>
+              <input
+                type="file"
+                id="curriculoAnexo"
+                name="anexo"
+                accept="application/pdf"
+                style="display: none"
+              />
+            </div>
+            <span id="curriculoAnexoErro" class="curriculo-anexo-erro"></span>
+          </div>
+
+          <div class="curriculo-campo">
+            <label for="curriculoMensagem">Mensagem</label>
+            <textarea id="curriculoMensagem" name="mensagem" rows="4"></textarea>
+          </div>
+
+          <label class="curriculo-consentimento">
+            <input type="checkbox" id="curriculoConsentimento" required />
+            <span
+              >Minha vontade, autorizo expressamente, concordo e consinto com
+              o tratamento de meus dados.</span
+            >
+          </label>
+
+          <div id="curriculoLoading" class="boleto-loading">Enviando...</div>
+          <div id="curriculoErro" class="boleto-erro"></div>
+          <div
+            id="curriculoSucesso"
+            class="status-sucesso"
+            style="display: none"
+          >
+            <h2>✅ Currículo enviado com sucesso!</h2>
+            <p>
+              Obrigado pelo interesse em fazer parte da Atos Telecom.
+              Entraremos em contato se seu perfil for selecionado.
+            </p>
+          </div>
+
+          <button
+            type="submit"
+            id="curriculoSubmitBtn"
+            class="btn curriculo-btn-enviar"
+          >
+            Quero me inscrever
+          </button>
+        </form>
+      </div>
+    </div>
+
     <div class="modal-overlay" id="modalCadastro">
       <div class="modal-card">
         <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">
@@ -775,7 +1099,7 @@
             src="https://i.supaimg.com/770984fb-f838-4d3c-9aa6-54f2368b85fe/d2612ca8-1d6f-493f-a6b7-2c593d1fd3e9.png"
             alt="Logo Atos Telecom"
           />
-          <h2>Assinar <span class="gradient-text">Plano</span></h2>
+          <h2>Solicitar <span class="gradient-text">Plano</span></h2>
           <p>
             Preencha seus dados e nossa equipe entra em contato para agendar a
             instalação.
@@ -1092,5 +1416,6 @@
     <script src="form.js"></script>
     <script src="boleto.js"></script>
     <script src="regiao.js"></script>
+    <script src="curriculo.js"></script>
   </body>
 </html>
