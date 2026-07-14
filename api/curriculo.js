@@ -3,7 +3,7 @@ export const config = {
 };
 
 // TODO: troque pelo chat_id da conversa "CURRÍCULO" no Telegram
-const CHAT_ID_CURRICULO = "-1000000000000";
+const CHAT_ID_CURRICULO = "-1003565362692";
 
 export default async function handler(request) {
   try {
