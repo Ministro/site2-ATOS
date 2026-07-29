@@ -5,8 +5,8 @@ const CFG = {
         gripStrength: 1.0,
         grabRadius: 1.1,
         grav: -100,
-        rest: 0.15,
-        fric: 0.5,
+        rest: 0.05,
+        fric: 0.72,
         pCount: 140,
         pScale: 1.2,
         pRatio: 1.0,
@@ -184,6 +184,7 @@ const CFG = {
           antialias: true,
           powerPreference: "high-performance",
         });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -421,9 +422,11 @@ const CFG = {
       function initPhysics() {
         world = new CANNON.World();
         world.gravity.set(0, CFG.grav, 0);
-        world.broadphase = new CANNON.NaiveBroadphase();
-        world.solver.iterations = 45;
-        world.solver.tolerance = 0.001;
+        // SAP é muito mais eficiente para muitos prêmios dentro de uma área fechada.
+        world.broadphase = new CANNON.SAPBroadphase(world);
+        world.broadphase.axisIndex = 1;
+        world.solver.iterations = 24;
+        world.solver.tolerance = 0.0015;
         world.allowSleep = true;
 
         defaultMat = new CANNON.Material("default");
@@ -1739,7 +1742,7 @@ const CFG = {
           scene.add(mesh);
 
           const prizeType = mesh.userData.prizeType;
-          const bodyMass = prizeType === 'gift' ? 6.0 : prizeType === 'logo' ? 5.0 : 3.4;
+          const bodyMass = prizeType === 'gift' ? 9.0 : prizeType === 'logo' ? 7.5 : 5.2;
           const body = new CANNON.Body({ mass: bodyMass, material: defaultMat });
 
           // Colliders mais próximos do formato real evitam que caixas e medalhas
@@ -1762,13 +1765,15 @@ const CFG = {
           }
 
           body.position.copy(mesh.position);
-          body.linearDamping = 0.0;
-          body.angularDamping = 0.68;
+          // Mais peso e amortecimento reduzem quique e impedem que os prêmios
+          // sejam arremessados quando os dedos da garra fecham.
+          body.linearDamping = 0.38;
+          body.angularDamping = 0.76;
           body.allowSleep = true;
-          body.sleepSpeedLimit = 0.18;
-          body.sleepTimeLimit = 0.8;
-          body.ccdSpeedThreshold = 0.1;
-          body.ccdIterations = 8;
+          body.sleepSpeedLimit = 0.24;
+          body.sleepTimeLimit = 0.55;
+          body.ccdSpeedThreshold = 1.5;
+          body.ccdIterations = 4;
           body.collisionFilterGroup = G_PRIZE;
           body.collisionFilterMask = G_DEFAULT | G_PRIZE | G_CLAW;
 
@@ -2145,7 +2150,7 @@ const CFG = {
               (f.mesh.rotation.x = THREE.MathUtils.lerp(
                 f.mesh.rotation.x,
                 targetAngle,
-                0.2
+                0.08
               ))
           );
         } else if (state.mode === "ASCENDING") {
@@ -2351,6 +2356,12 @@ const CFG = {
             (ny - last.y) / Math.max(dt, 0.001),
             (nz - last.z) / Math.max(dt, 0.001)
           );
+          // Corpos cinemáticos podem gerar impulsos enormes ao mudar de posição.
+          // Limitar sua velocidade mantém o contato firme sem lançar os prêmios.
+          const maxFingerVelocity = 7.0;
+          proxy.velocity.x = THREE.MathUtils.clamp(proxy.velocity.x, -maxFingerVelocity, maxFingerVelocity);
+          proxy.velocity.y = THREE.MathUtils.clamp(proxy.velocity.y, -maxFingerVelocity, maxFingerVelocity);
+          proxy.velocity.z = THREE.MathUtils.clamp(proxy.velocity.z, -maxFingerVelocity, maxFingerVelocity);
           proxy.position.set(nx, ny, nz);
           const q = new CANNON.Quaternion();
           q.setFromEuler(-rX, angle, 0, "XYZ");
@@ -2421,12 +2432,16 @@ const CFG = {
         showPrizeWin._timer = setTimeout(() => overlay.classList.remove("show"), 4200);
       }
 
-      function animate() {
+      let lastFrameTime = performance.now();
+      function animate(now = performance.now()) {
         requestAnimationFrame(animate);
-        const dt = 0.016;
+        const dt = Math.min((now - lastFrameTime) / 1000, 1 / 30);
+        lastFrameTime = now;
         updateGame(dt);
         updateCameraOrbit();
-        world.step(1 / 120, dt, 8);
+        // 60 Hz com até 3 subpassos mantém estabilidade e reduz bastante o custo
+        // comparado ao passo fixo de 120 Hz usado anteriormente.
+        world.step(1 / 60, dt, 3);
         prizes.forEach((p) => {
           p.mesh.position.copy(p.body.position);
           p.mesh.quaternion.copy(p.body.quaternion);
