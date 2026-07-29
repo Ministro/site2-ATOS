@@ -4,15 +4,22 @@ if (!atosGameToken) {
   window.location.replace('../jogar.html');
   throw new Error('Partida sem autorização');
 }
+let atosCreditosCarregados = false;
+let atosCreditoPendente = false;
 fetch('/api/game-validar-sessao', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ token: atosGameToken })
 }).then(async (resp) => {
-  if (!resp.ok) {
+  const dados = await resp.json().catch(() => ({}));
+  if (!resp.ok || !dados.valido) {
     sessionStorage.removeItem('atosGameToken');
     window.location.replace('../jogar.html');
+    return;
   }
+  state.credits = Number(dados.creditos || 0);
+  atosCreditosCarregados = true;
+  if (panelCreditCtx) drawPanelDisplay(panelCreditCtx, panelCreditTex, "CRÉDITOS", state.credits, state.credits <= 1);
 }).catch(() => {
   sessionStorage.removeItem('atosGameToken');
   window.location.replace('../jogar.html');
@@ -46,7 +53,7 @@ const CFG = {
         timerActive: false,
         timerValue: TIMER_DURATION,
         moving: false,
-        credits: 50,
+        credits: 0,
         creditCharged: false,
       };
 
@@ -1029,12 +1036,36 @@ const CFG = {
         scene.add(panel);
       }
 
-      function chargeCredit() {
-        if (state.creditCharged || state.credits <= 0) return state.credits > 0;
-        state.credits -= 1;
-        state.creditCharged = true;
-        if (panelCreditCtx) drawPanelDisplay(panelCreditCtx, panelCreditTex, "CRÉDITOS", state.credits, state.credits <= 5);
-        return true;
+      async function chargeCredit() {
+        if (state.creditCharged) return true;
+        if (!atosCreditosCarregados || atosCreditoPendente) return false;
+        if (state.credits <= 0) {
+          if (panelCreditCtx) drawPanelDisplay(panelCreditCtx, panelCreditTex, "CRÉDITOS", 0, true);
+          return false;
+        }
+        atosCreditoPendente = true;
+        try {
+          const resp = await fetch('/api/game-usar-credito', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: atosGameToken })
+          });
+          const dados = await resp.json().catch(() => ({}));
+          if (!resp.ok || !dados.autorizado) {
+            state.credits = Number(dados.creditosRestantes || 0);
+            if (panelCreditCtx) drawPanelDisplay(panelCreditCtx, panelCreditTex, "CRÉDITOS", state.credits, true);
+            return false;
+          }
+          state.credits = Number(dados.creditosRestantes || 0);
+          state.creditCharged = true;
+          if (panelCreditCtx) drawPanelDisplay(panelCreditCtx, panelCreditTex, "CRÉDITOS", state.credits, state.credits <= 1);
+          return true;
+        } catch (e) {
+          console.error('Falha ao utilizar crédito:', e);
+          return false;
+        } finally {
+          atosCreditoPendente = false;
+        }
       }
 
       function createMachine() {
@@ -1956,11 +1987,11 @@ const CFG = {
       }
 
       function setupInput() {
-        const onKey = (k, v) => {
+        const onKey = async (k, v) => {
           state.keys[k] = v;
           if (state.mode === "IDLE") {
             if (k === "Space" && v) {
-              if (!chargeCredit()) return;
+              if (!(await chargeCredit())) return;
               state.mode = "DESCENDING";
               state.timerActive = false;
               moveSound.pause();
@@ -1994,10 +2025,10 @@ const CFG = {
         });
 
         const drop = document.getElementById("btn-drop");
-        const doDrop = (e) => {
+        const doDrop = async (e) => {
           if (e) e.preventDefault();
           if (state.mode === "IDLE") {
-            if (!chargeCredit()) return;
+            if (!(await chargeCredit())) return;
             state.mode = "DESCENDING";
             state.timerActive = false;
             moveSound.pause();
@@ -2057,14 +2088,22 @@ const CFG = {
           state.moving = isMoving;
 
           if (isMoving && !state.timerActive) {
-            if (!chargeCredit()) {
-              state.keys = {};
+            if (!state.creditCharged) {
+              if (!atosCreditoPendente) {
+                chargeCredit().then((ok) => {
+                  if (!ok) {
+                    state.keys = {};
+                    state.moving = false;
+                    moveSound.pause();
+                  }
+                });
+              }
               state.moving = false;
               moveSound.pause();
-            } else {
-              state.timerActive = true;
-              state.timerValue = TIMER_DURATION;
+              return;
             }
+            state.timerActive = true;
+            state.timerValue = TIMER_DURATION;
           }
 
           const oldX = state.claw.x;
