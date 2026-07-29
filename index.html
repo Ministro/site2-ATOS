@@ -192,7 +192,7 @@
                 Seja nosso cliente
               </button>
               <a href="#planos" class="btn btn-ghost">Ver planos</a>
-              <a href="minigame/index.html" class="btn btn-minigame" aria-label="Abrir Mini Game da Atos Telecom">Mini Game</a>
+              <button type="button" id="openMiniGame" class="btn btn-minigame" aria-label="Abrir Mini Game da Atos Telecom">Mini Game</button>
             </div>
           </div>
         </div>
@@ -1434,6 +1434,21 @@
           © 2026 Atos Comercio e Empreendimentos de Informatica LTDA ME — Todos
           os direitos reservados
         </p>
+      </div>
+    </div>
+
+
+    <!-- MINI GAME EM MODAL / IFRAME -->
+    <div id="miniGameModal" class="minigame-modal" aria-hidden="true">
+      <div class="minigame-shell" role="dialog" aria-modal="true" aria-labelledby="miniGameTitle">
+        <button type="button" id="closeMiniGame" class="minigame-close" aria-label="Fechar Mini Game">×</button>
+        <div id="miniGameIntro" class="minigame-intro">
+          <div class="minigame-logo">@</div>
+          <h2 id="miniGameTitle">Mini Game Atos Telecom</h2>
+          <p>Teste sua habilidade na máquina de garra e concorra a descontos.</p>
+          <button type="button" id="playMiniGame" class="minigame-play">PLAY</button>
+        </div>
+        <iframe id="miniGameFrame" title="Mini Game Atos Telecom" allow="autoplay; fullscreen" loading="lazy"></iframe>
       </div>
     </div>
 

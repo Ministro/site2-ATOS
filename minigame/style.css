@@ -315,3 +315,45 @@ body {
 
 /* O cronômetro agora aparece no painel físico da máquina. */
 #timer-box { display: none !important; }
+
+
+/* ===== PREMIAÇÃO ===== */
+#win-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  background: rgba(0,0,0,.28);
+}
+#win-overlay.show { display: flex; }
+#win-card {
+  width: min(520px, 88vw);
+  padding: 30px 28px;
+  border: 2px solid #ffd700;
+  border-radius: 22px;
+  color: white;
+  text-align: center;
+  background: rgba(8,8,12,.94);
+  box-shadow: 0 0 50px rgba(255,215,0,.38);
+  animation: winPop .45s cubic-bezier(.2,.9,.2,1.2);
+}
+#win-card .win-small { color: #ffd700; font-weight: 800; letter-spacing: .16em; }
+#win-card h2 { margin: 8px 0 10px; font-size: clamp(30px,5vw,54px); }
+#win-card p { margin: 0; font-size: clamp(18px,2.5vw,28px); font-weight: 700; }
+.confetti-piece {
+  position: fixed;
+  z-index: 10000;
+  top: -20px;
+  width: 10px;
+  height: 18px;
+  pointer-events: none;
+  animation: confettiFall var(--duration) linear forwards;
+  transform: rotate(var(--rotation));
+}
+@keyframes winPop { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: scale(1); } }
+@keyframes confettiFall {
+  to { transform: translate3d(var(--drift), 110vh, 0) rotate(900deg); opacity: .9; }
+}

@@ -2380,6 +2380,47 @@ const CFG = {
         }
       }
 
+
+
+      function ensureWinOverlay() {
+        let overlay = document.getElementById("win-overlay");
+        if (overlay) return overlay;
+        overlay = document.createElement("div");
+        overlay.id = "win-overlay";
+        overlay.innerHTML = `
+          <div id="win-card">
+            <div class="win-small">ATOS TELECOM</div>
+            <h2>PARABÉNS!</h2>
+            <p>VOCÊ GANHOU 50% DE DESCONTO</p>
+          </div>`;
+        document.body.appendChild(overlay);
+        return overlay;
+      }
+
+      function launchConfetti() {
+        const colors = ["#ffd700", "#ffffff", "#19d36b", "#ff4fd8", "#00d9ff"];
+        for (let i = 0; i < 130; i++) {
+          const piece = document.createElement("span");
+          piece.className = "confetti-piece";
+          piece.style.left = `${Math.random() * 100}vw`;
+          piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+          piece.style.setProperty("--duration", `${2.4 + Math.random() * 2.4}s`);
+          piece.style.setProperty("--drift", `${-180 + Math.random() * 360}px`);
+          piece.style.setProperty("--rotation", `${Math.random() * 360}deg`);
+          piece.style.borderRadius = Math.random() > 0.55 ? "50%" : "2px";
+          document.body.appendChild(piece);
+          setTimeout(() => piece.remove(), 5200);
+        }
+      }
+
+      function showPrizeWin() {
+        const overlay = ensureWinOverlay();
+        launchConfetti();
+        overlay.classList.add("show");
+        clearTimeout(showPrizeWin._timer);
+        showPrizeWin._timer = setTimeout(() => overlay.classList.remove("show"), 4200);
+      }
+
       function animate() {
         requestAnimationFrame(animate);
         const dt = 0.016;
@@ -2396,8 +2437,14 @@ const CFG = {
             !p.scored
           ) {
             p.scored = true;
-            state.score++;
-            document.getElementById("score").innerText = state.score;
+            const prizeType = p.mesh.userData.prizeType;
+            const isWinningPrize = prizeType === "gift" || prizeType === "logo";
+            if (isWinningPrize) {
+              state.score++;
+              const scoreEl = document.getElementById("score");
+              if (scoreEl) scoreEl.innerText = state.score;
+              showPrizeWin();
+            }
             scene.remove(p.mesh);
             world.removeBody(p.body);
           }

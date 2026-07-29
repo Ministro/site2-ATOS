@@ -389,3 +389,48 @@ function abrirSpeedTest() {
     loading.style.display = "none";
   }, 2500);
 }
+
+
+// ===== MINI GAME EM MODAL COM TELA PLAY =====
+(() => {
+  const modal = document.getElementById('miniGameModal');
+  const openBtn = document.getElementById('openMiniGame');
+  const closeBtn = document.getElementById('closeMiniGame');
+  const playBtn = document.getElementById('playMiniGame');
+  const intro = document.getElementById('miniGameIntro');
+  const frame = document.getElementById('miniGameFrame');
+  if (!modal || !openBtn || !closeBtn || !playBtn || !intro || !frame) return;
+
+  function openGameModal() {
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('minigame-open');
+    intro.classList.remove('hidden');
+    closeBtn.focus();
+  }
+  function closeGameModal() {
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('minigame-open');
+    frame.src = 'about:blank';
+    intro.classList.remove('hidden');
+    openBtn.focus();
+  }
+  function startGame() {
+    if (!frame.src || frame.src === 'about:blank' || frame.src.endsWith('about:blank')) {
+      frame.src = 'minigame/index.html';
+    }
+    intro.classList.add('hidden');
+    setTimeout(() => frame.focus(), 250);
+  }
+
+  openBtn.addEventListener('click', openGameModal);
+  closeBtn.addEventListener('click', closeGameModal);
+  playBtn.addEventListener('click', startGame);
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) closeGameModal();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modal.classList.contains('open')) closeGameModal();
+  });
+})();
