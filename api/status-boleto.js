@@ -69,24 +69,36 @@ async function creditarPagamento({ fatura, cliente }) {
     return { creditado: false, duplicado: false, creditosGerados: 0, saldo: null };
   }
 
-  const retorno = await supabase("rpc/game_creditar_pagamento", {
+  // Usa exatamente a função criada pelo SQL enviado ao usuário.
+  // Ela retorna true quando creditou e false quando a fatura já havia sido processada.
+  const retorno = await supabase("rpc/game_adicionar_creditos", {
     method: "POST",
     headers: { Prefer: "return=representation" },
     body: JSON.stringify({
-      p_fatura_id: String(fatura.id),
       p_cpf: cpf,
       p_nome: nome,
-      p_valor_pago: valor,
-      p_pago_em: fatura.pagamento_data || fatura.data_pagamento || null
+      p_fatura_id: Number(fatura.id),
+      p_valor: valor,
+      p_creditos: creditos
     })
   });
 
-  const resultado = Array.isArray(retorno) ? retorno[0] : retorno;
+  const creditado = Array.isArray(retorno) ? Boolean(retorno[0]) : Boolean(retorno);
+
+  // Busca o saldo atualizado para exibir na confirmação.
+  const clientes = await supabase(
+    `game_clientes?cpf=eq.${encodeURIComponent(cpf)}&select=creditos&limit=1`,
+    { method: "GET" }
+  );
+  const saldo = Array.isArray(clientes) && clientes[0]
+    ? Number(clientes[0].creditos || 0)
+    : null;
+
   return {
-    creditado: Boolean(resultado?.creditado),
-    duplicado: Boolean(resultado?.duplicado),
-    creditosGerados: Number(resultado?.creditos_gerados || 0),
-    saldo: resultado?.saldo_atual == null ? null : Number(resultado.saldo_atual)
+    creditado,
+    duplicado: !creditado,
+    creditosGerados: creditado ? creditos : 0,
+    saldo
   };
 }
 
