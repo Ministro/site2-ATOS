@@ -148,6 +148,10 @@ function iniciarVerificacaoPagamento(){
 
       const data = await resp.json();
 
+      if (!resp.ok) {
+        console.error("Falha na verificação do pagamento:", data);
+        return;
+      }
 
       if(data.pago){
 

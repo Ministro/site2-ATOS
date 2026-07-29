@@ -14,3 +14,9 @@ Funcionamento:
 - Cada R$ 50,00 pagos gera 1 crédito.
 - A fatura fica registrada em game_pagamentos.
 - A mesma fatura não pode gerar créditos novamente.
+
+
+CORREÇÃO DE BAIXA MANUAL:
+- Esta versão aceita status R (Recebido) e P (Baixado).
+- Também corrige o controle de duplicidade da função SQL.
+- É obrigatório executar novamente supabase-game-setup.sql e fazer novo deploy.

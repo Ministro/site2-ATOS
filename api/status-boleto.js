@@ -127,8 +127,10 @@ export default async function handler(req, res) {
       return res.status(404).json({ erro: "Fatura não encontrada", pago: false });
     }
 
-    if (String(fatura.status).toUpperCase() !== "R") {
-      return res.status(200).json({ pago: false });
+    const status = String(fatura.status || "").toUpperCase();
+    // No IXC, baixa manual pode aparecer como P (Baixado) e recebimento como R.
+    if (!new Set(["R", "P"]).has(status)) {
+      return res.status(200).json({ pago: false, status });
     }
 
     // Recupera o CPF e o nome diretamente do IXC, sem confiar nos dados do navegador.
@@ -151,6 +153,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       pago: true,
+      status,
       faturaId: String(fatura.id),
       valorPago: valorPago(fatura),
       ...credito

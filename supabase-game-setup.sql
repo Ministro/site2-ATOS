@@ -69,7 +69,7 @@ as $$
 declare
   qtd integer;
   novo_saldo integer;
-  pagamento_inserido boolean := false;
+  linhas_inseridas integer := 0;
 begin
   qtd := floor(coalesce(p_valor_pago, 0) / 50)::integer;
 
@@ -93,9 +93,9 @@ begin
       end)
   on conflict (fatura_id) do nothing;
 
-  get diagnostics pagamento_inserido = row_count;
+  get diagnostics linhas_inseridas = row_count;
 
-  if not pagamento_inserido then
+  if linhas_inseridas = 0 then
     select coalesce(gc.creditos, 0)
       into novo_saldo
       from public.game_clientes gc
