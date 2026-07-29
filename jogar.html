@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050505" />
+  <title>Mini Game | Atos Telecom</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255, 216, 0, .14), transparent 34%),
+        linear-gradient(145deg, #101510 0%, #050505 55%, #000 100%);
+    }
+    .launcher {
+      width: min(620px, 100%);
+      padding: clamp(30px, 6vw, 58px);
+      text-align: center;
+      border: 1px solid rgba(255, 216, 0, .45);
+      border-radius: 24px;
+      background: rgba(6, 6, 6, .9);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, .65);
+    }
+    .logo {
+      width: 104px;
+      height: 104px;
+      margin: 0 auto 22px;
+      display: grid;
+      place-items: center;
+      border: 3px solid #ffd800;
+      border-radius: 50%;
+      color: #ffd800;
+      font-size: 68px;
+      font-weight: 900;
+    }
+    h1 { margin: 0 0 14px; font-size: clamp(30px, 6vw, 52px); }
+    p { margin: 0 auto 28px; max-width: 480px; color: #d6d6d6; font-size: 17px; line-height: 1.55; }
+    .play {
+      min-width: 210px;
+      padding: 17px 38px;
+      border: 0;
+      border-radius: 999px;
+      background: #ffd800;
+      color: #050505;
+      font-size: 22px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform .2s ease, filter .2s ease;
+    }
+    .play:hover { transform: translateY(-2px); filter: brightness(1.08); }
+    .play:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
+    .back { display: inline-block; margin-top: 20px; color: #d8d8d8; text-decoration: none; }
+    .back:hover { color: #ffd800; }
+  </style>
+</head>
+<body>
+  <main class="launcher">
+    <div class="logo" aria-hidden="true">@</div>
+    <h1>Mini Game Atos Telecom</h1>
+    <p>Teste sua habilidade na máquina de garra e concorra a descontos especiais.</p>
+    <button type="button" id="playGame" class="play">PLAY</button><br />
+    <a class="back" href="index.html">Voltar ao site</a>
+  </main>
+  <script>
+    document.getElementById('playGame').addEventListener('click', () => {
+      window.location.href = 'minigame/index.html';
+    });
+  </script>
+</body>
+</html>
