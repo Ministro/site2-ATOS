@@ -5,6 +5,7 @@ const loading = document.getElementById("boletoLoading");
 const erroBox = document.getElementById("boletoErro");
 const resultado = document.getElementById("boletoResultado");
 let clienteAtual = null;
+let faturaAtual = null;
 let verificarPagamentoTimer = null;
 
 // máscara de CPF ao digitar
@@ -58,6 +59,7 @@ async function consultar() {
   preencherResultado(data);
 
   clienteAtual = data.cliente.id;
+  faturaAtual = data.boleto.id;
 
   iniciarVerificacaoPagamento();
 
@@ -136,7 +138,8 @@ function iniciarVerificacaoPagamento(){
 
         body:JSON.stringify({
 
-          clienteId:clienteAtual
+          clienteId: clienteAtual,
+          faturaId: faturaAtual
 
         })
 
@@ -152,7 +155,7 @@ function iniciarVerificacaoPagamento(){
         clearInterval(verificarPagamentoTimer);
 
 
-        mostrarPagamentoConfirmado();
+        mostrarPagamentoConfirmado(data);
 
 
       }
@@ -170,7 +173,7 @@ function iniciarVerificacaoPagamento(){
 
 }
 
-function mostrarPagamentoConfirmado(){
+function mostrarPagamentoConfirmado(data = {}){
 
 
 resultado.innerHTML = `
@@ -184,7 +187,7 @@ resultado.innerHTML = `
 
 
 <p>
-Pagamento confirmado.
+Pagamento confirmado.${data.creditosGerados > 0 ? `<br><strong>${data.creditosGerados} crédito(s) adicionado(s).</strong>${data.saldo !== null ? `<br>Saldo atual: <strong>${data.saldo}</strong>` : ""}` : ""}
 </p>
 
 
