@@ -326,6 +326,19 @@ nav {
   border-color: var(--accent-orange);
   box-shadow: none;
 }
+
+.btn-minigame {
+  background: #0b0a12;
+  border: 1.5px solid var(--accent-orange);
+  color: var(--accent-orange);
+  box-shadow: 0 0 18px rgba(255, 214, 10, 0.12);
+}
+.btn-minigame:hover {
+  background: rgba(255, 214, 10, 0.1);
+  border-color: #ffe55c;
+  color: #ffe55c;
+  box-shadow: 0 8px 26px -10px rgba(255, 214, 10, 0.65);
+}
 .btn-fatura-rapida {
   background: #0b0a12;
   border: 1.5px solid var(--accent-orange);

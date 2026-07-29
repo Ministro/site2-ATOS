@@ -1,0 +1,317 @@
+body {
+        margin: 0;
+        overflow: hidden;
+        background: #000;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      #ui-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        z-index: 10;
+      }
+
+      #hamburger {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        cursor: pointer;
+        pointer-events: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+        z-index: 50;
+        transition: background 0.2s;
+      }
+      #hamburger:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      .bar {
+        width: 24px;
+        height: 2px;
+        background: white;
+        border-radius: 2px;
+      }
+
+      #settings-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        pointer-events: auto;
+        display: none;
+        z-index: 40;
+        backdrop-filter: blur(2px);
+      }
+
+      #settings-panel {
+        position: absolute;
+        top: 70px;
+        left: 20px;
+        width: 400px;
+        background: rgba(10, 10, 14, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        pointer-events: auto;
+        display: none;
+        flex-direction: column;
+        gap: 15px;
+        color: #ccc;
+        font-size: 12px;
+        z-index: 50;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95);
+        max-height: 85vh;
+        overflow-y: auto;
+      }
+
+      #settings-panel::-webkit-scrollbar {
+        width: 5px;
+      }
+      #settings-panel::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+      }
+      #settings-panel::-webkit-scrollbar-thumb {
+        background: #555;
+        border-radius: 3px;
+      }
+
+      .setting-group {
+        margin-bottom: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.02);
+        padding: 10px;
+        border-radius: 6px;
+      }
+      .group-title {
+        font-weight: 800;
+        color: #ff00cc;
+        font-size: 11px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .group-content {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .setting-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .setting-label {
+        font-weight: 600;
+        color: #aaa;
+        font-size: 11px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .val-disp {
+        color: #00ffff;
+        font-family: monospace;
+        font-size: 10px;
+        background: rgba(0, 255, 255, 0.05);
+        padding: 1px 4px;
+        border-radius: 3px;
+      }
+
+      .color-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .color-item {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      input[type="color"] {
+        width: 100%;
+        height: 24px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        background: none;
+        padding: 0;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        accent-color: #ff00cc;
+        height: 3px;
+        background: #333;
+        border-radius: 2px;
+        -webkit-appearance: none;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 12px;
+        height: 12px;
+        background: #eee;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: transform 0.1s;
+      }
+      input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.3);
+        background: #fff;
+      }
+
+      .rect-btn {
+        background: linear-gradient(
+          45deg,
+          rgba(255, 0, 204, 0.2),
+          rgba(0, 255, 255, 0.2)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        color: white;
+        font-weight: bold;
+        font-size: 11px;
+        padding: 10px 0;
+        cursor: pointer;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.2s;
+      }
+      .rect-btn:hover {
+        filter: brightness(1.2);
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+      .rect-btn:active {
+        transform: scale(0.98);
+      }
+
+      .rand-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      #score-box {
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        text-align: right;
+        pointer-events: none;
+        z-index: 20;
+      }
+      .score-num {
+        font-size: 60px;
+        color: #fff;
+        font-weight: 900;
+        font-family: monospace;
+        text-shadow: 0 0 20px #ff00cc;
+      }
+      .score-label {
+        color: #00ffff;
+        font-size: 14px;
+        letter-spacing: 2px;
+        font-weight: bold;
+      }
+
+      #timer-box {
+        position: absolute;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        pointer-events: none;
+        z-index: 20;
+      }
+      .timer-num {
+        font-size: 44px;
+        color: #fff;
+        font-weight: 900;
+        font-family: monospace;
+        text-shadow: 0 0 20px #00ffff;
+        transition: color 0.2s, text-shadow 0.2s;
+      }
+      .timer-num.low {
+        color: #ff3355;
+        text-shadow: 0 0 20px #ff0033;
+      }
+      .timer-label {
+        color: #00ffff;
+        font-size: 13px;
+        letter-spacing: 2px;
+        font-weight: bold;
+      }
+
+      .drop-btn {
+        position: absolute;
+        bottom: 35px;
+        right: 35px;
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #ff00cc, #660066);
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 0 20px rgba(255, 0, 204, 0.6);
+        color: white;
+        font-weight: 900;
+        font-size: 13px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        pointer-events: auto;
+        opacity: 0.45;
+        transition: opacity 0.2s, transform 0.15s, filter 0.15s;
+        z-index: 20;
+      }
+      .drop-btn:active {
+        opacity: 1;
+        transform: scale(0.95);
+        filter: brightness(1.5);
+      }
+
+      #joystick-base {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        margin-left: -50px;
+        margin-top: -50px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.25);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.15s;
+        z-index: 20;
+      }
+      #joystick-knob {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 46px;
+        height: 46px;
+        margin-left: -23px;
+        margin-top: -23px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+/* O cronômetro agora aparece no painel físico da máquina. */
+#timer-box { display: none !important; }
