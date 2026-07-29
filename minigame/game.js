@@ -1,3 +1,23 @@
+// Autoriza somente partidas liberadas pela API do site.
+const atosGameToken = sessionStorage.getItem('atosGameToken');
+if (!atosGameToken) {
+  window.location.replace('../jogar.html');
+  throw new Error('Partida sem autorização');
+}
+fetch('/api/game-validar-sessao', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ token: atosGameToken })
+}).then(async (resp) => {
+  if (!resp.ok) {
+    sessionStorage.removeItem('atosGameToken');
+    window.location.replace('../jogar.html');
+  }
+}).catch(() => {
+  sessionStorage.removeItem('atosGameToken');
+  window.location.replace('../jogar.html');
+});
+
 const CFG = {
         clawSpeed: 6.0,
         dropSpeed: 7.0,
