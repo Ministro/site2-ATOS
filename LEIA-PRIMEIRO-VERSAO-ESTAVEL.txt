@@ -1,0 +1,22 @@
+VERSÃO ESTÁVEL — ATOS TELECOM
+
+CORREÇÕES DESTA VERSÃO
+1. Sincronização IXC voltou ao modelo estável: consulta pagamentos do dia e evita duplicidade pelo fatura_id.
+2. A tabela game_sync_estado não é mais usada. O erro com "ixc_pagamentos" foi removido.
+3. O registro em game_sync_logs é opcional: se a tabela não existir ou falhar, a sincronização continua funcionando.
+4. No celular, o primeiro movimento do joystick já desconta 1 crédito e inicia o cronômetro.
+5. O cronômetro conta 30 segundos tanto no celular quanto no computador.
+6. O desconto acontece no primeiro movimento, não quando a garra desce.
+7. O movimento visual começa imediatamente, sem esperar a resposta da internet.
+8. Proteção contra desconto duplo permanece ativa.
+
+PUBLICAÇÃO
+- Envie este projeto para a Vercel e faça Redeploy.
+- Não altere a URL nem o intervalo do EasyCron.
+- Não é necessário executar SQL novo.
+
+TESTE RECOMENDADO
+- Abra pelo celular.
+- Consulte um CPF com crédito.
+- Toque e arraste o joystick do lado esquerdo.
+- O saldo deve diminuir imediatamente e o cronômetro deve começar em 30.
