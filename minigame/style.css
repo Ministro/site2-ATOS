@@ -357,3 +357,12 @@ body {
 @keyframes confettiFall {
   to { transform: translate3d(var(--drift), 110vh, 0) rotate(900deg); opacity: .9; }
 }
+
+
+#no-credits-overlay { position: fixed; inset: 0; z-index: 10020; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,.76); pointer-events: auto; }
+#no-credits-overlay.show { display: flex; }
+#no-credits-card { width: min(620px, 92vw); padding: 30px 26px; border: 2px solid #ffd12f; border-radius: 22px; color: #fff; text-align: center; background: rgba(8,8,12,.98); box-shadow: 0 0 50px rgba(255,209,47,.28); }
+#no-credits-card .no-credits-small { color: #ffd12f; font-weight: 800; letter-spacing: .16em; }
+#no-credits-card h2 { margin: 10px 0 14px; font-size: clamp(28px,5vw,48px); color: #ffd12f; }
+#no-credits-card p { margin: 0 0 14px; font-size: clamp(17px,2.8vw,24px); line-height: 1.35; font-weight: 700; }
+#no-credits-card strong { font-size: clamp(18px,3vw,26px); }

@@ -40,7 +40,7 @@ const CFG = {
         pRatio: 1.0,
       };
 
-      const TIMER_DURATION = 40;
+      const TIMER_DURATION = 30;
       const state = {
         claw: { x: -10, y: 25, z: 5 },
         mode: "IDLE",
@@ -1036,14 +1036,35 @@ const CFG = {
         scene.add(panel);
       }
 
+      function showNoCreditsMessage() {
+        let overlay = document.getElementById("no-credits-overlay");
+        if (!overlay) {
+          overlay = document.createElement("div");
+          overlay.id = "no-credits-overlay";
+          overlay.innerHTML = `
+            <div id="no-credits-card">
+              <div class="no-credits-small">ATOS TELECOM</div>
+              <h2>VOCÊ SEM CRÉDITOS</h2>
+              <p>APÓS PAGAR SUA FATURA NOVAMENTE TERÁ MAIS CHANCES.</p>
+              <strong>OBRIGADO!</strong>
+            </div>`;
+          document.body.appendChild(overlay);
+        }
+        overlay.classList.add("show");
+      }
+
       async function chargeCredit() {
         if (state.creditCharged) return true;
         if (!atosCreditosCarregados || atosCreditoPendente) return false;
         if (state.credits <= 0) {
           if (panelCreditCtx) drawPanelDisplay(panelCreditCtx, panelCreditTex, "CRÉDITOS", 0, true);
+          showNoCreditsMessage();
           return false;
         }
         atosCreditoPendente = true;
+        state.creditCharged = true;
+        state.credits = Math.max(0, state.credits - 1);
+        if (panelCreditCtx) drawPanelDisplay(panelCreditCtx, panelCreditTex, "CRÉDITOS", state.credits, state.credits <= 1);
         try {
           const resp = await fetch('/api/game-usar-credito', {
             method: 'POST',
@@ -1052,16 +1073,28 @@ const CFG = {
           });
           const dados = await resp.json().catch(() => ({}));
           if (!resp.ok || !dados.autorizado) {
-            state.credits = Number(dados.creditosRestantes || 0);
+            state.creditCharged = false;
+            state.credits = Number(dados.creditosRestantes ?? state.credits ?? 0);
+            state.timerActive = false;
+            state.keys.KeyW = state.keys.KeyA = state.keys.KeyS = state.keys.KeyD = false;
+            moveSound.pause();
+            state.moving = false;
             if (panelCreditCtx) drawPanelDisplay(panelCreditCtx, panelCreditTex, "CRÉDITOS", state.credits, true);
+            if (state.credits <= 0) showNoCreditsMessage();
             return false;
           }
-          state.credits = Number(dados.creditosRestantes || 0);
-          state.creditCharged = true;
+          state.credits = Number(dados.creditosRestantes ?? state.credits);
           if (panelCreditCtx) drawPanelDisplay(panelCreditCtx, panelCreditTex, "CRÉDITOS", state.credits, state.credits <= 1);
           return true;
         } catch (e) {
           console.error('Falha ao utilizar crédito:', e);
+          state.creditCharged = false;
+          state.credits += 1;
+          state.timerActive = false;
+          state.keys.KeyW = state.keys.KeyA = state.keys.KeyS = state.keys.KeyD = false;
+          moveSound.pause();
+          state.moving = false;
+          if (panelCreditCtx) drawPanelDisplay(panelCreditCtx, panelCreditTex, "CRÉDITOS", state.credits, state.credits <= 1);
           return false;
         } finally {
           atosCreditoPendente = false;
@@ -1526,6 +1559,53 @@ const CFG = {
       }
 
 
+      const SPECIAL_PRIZES = [
+        "5% DE DESCONTO",
+        "10% DE DESCONTO",
+        "PIX DE R$ 30,00",
+        "CHAVEIRO",
+        "1 MÊS GRÁTIS DE INTERNET",
+      ];
+
+      function randomSpecialPrize() {
+        return SPECIAL_PRIZES[Math.floor(Math.random() * SPECIAL_PRIZES.length)];
+      }
+
+      function createPrizeLabel(text, width = 2.35, height = 0.72) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 768;
+        canvas.height = 240;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#050505';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = '#ffd12f';
+        ctx.lineWidth = 12;
+        ctx.strokeRect(8, 8, canvas.width - 16, canvas.height - 16);
+        ctx.fillStyle = '#ffd12f';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = '900 58px Arial, Helvetica, sans-serif';
+        const words = text.split(' ');
+        const lines = [];
+        let line = '';
+        for (const word of words) {
+          const test = line ? `${line} ${word}` : word;
+          if (ctx.measureText(test).width > 680 && line) {
+            lines.push(line);
+            line = word;
+          } else line = test;
+        }
+        if (line) lines.push(line);
+        const visible = lines.slice(0, 3);
+        const step = 62;
+        const startY = canvas.height / 2 - ((visible.length - 1) * step) / 2;
+        visible.forEach((value, index) => ctx.fillText(value, canvas.width / 2, startY + index * step));
+        const tex = new THREE.CanvasTexture(canvas);
+        tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        const mat = new THREE.MeshBasicMaterial({ map: tex });
+        return new THREE.Mesh(new THREE.PlaneGeometry(width, height), mat);
+      }
+
       function makePrizeMaterial(color, metalness = 0.15, roughness = 0.45) {
         return new THREE.MeshStandardMaterial({ color, metalness, roughness });
       }
@@ -1570,7 +1650,16 @@ const CFG = {
             o.receiveShadow = true;
           }
         });
+        const prizeName = randomSpecialPrize();
+        const labelFront = createPrizeLabel(prizeName);
+        labelFront.position.set(0, 0.05, 1.365);
+        group.add(labelFront);
+        const labelBack = labelFront.clone();
+        labelBack.position.z = -1.365;
+        labelBack.rotation.y = Math.PI;
+        group.add(labelBack);
         group.userData.prizeType = 'gift';
+        group.userData.prizeName = prizeName;
         return group;
       }
 
@@ -1689,6 +1778,7 @@ const CFG = {
           }
         });
         group.userData.prizeType = 'logo';
+        group.userData.prizeName = randomSpecialPrize();
         return group;
       }
 
@@ -1988,8 +2078,8 @@ const CFG = {
 
       function setupInput() {
         requestClawDrop = async () => {
-          if (state.mode !== "IDLE" || atosCreditoPendente) return false;
-          if (!(await chargeCredit())) return false;
+          if (state.mode !== "IDLE") return false;
+          if (!state.creditCharged && !(await chargeCredit())) return false;
           state.mode = "DESCENDING";
           state.timerActive = false;
           moveSound.pause();
@@ -1999,6 +2089,17 @@ const CFG = {
         };
 
         const onKey = (k, v) => {
+          const isMovement = ["KeyW", "KeyA", "KeyS", "KeyD"].includes(k);
+          if (isMovement && v && state.mode === "IDLE" && !state.creditCharged) {
+            if (state.credits <= 0) {
+              state.keys[k] = false;
+              showNoCreditsMessage();
+              return;
+            }
+            state.timerActive = true;
+            state.timerValue = TIMER_DURATION;
+            chargeCredit();
+          }
           state.keys[k] = v;
           if (k === "Space" && v) requestClawDrop();
         };
@@ -2075,9 +2176,7 @@ const CFG = {
           }
           state.moving = isMoving;
 
-          if (isMoving && !state.timerActive) {
-            // Movimentar a garra não consome crédito. O crédito é usado somente
-            // quando o jogador confirma a descida com Espaço ou no botão 3D.
+          if (isMoving && !state.timerActive && state.creditCharged) {
             state.timerActive = true;
             state.timerValue = TIMER_DURATION;
           }
@@ -2437,7 +2536,7 @@ const CFG = {
           <div id="win-card">
             <div class="win-small">ATOS TELECOM</div>
             <h2>PARABÉNS!</h2>
-            <p>VOCÊ GANHOU 50% DE DESCONTO</p>
+            <p id="win-prize-text">VOCÊ GANHOU UM PRÊMIO!</p>
           </div>`;
         document.body.appendChild(overlay);
         return overlay;
@@ -2459,8 +2558,10 @@ const CFG = {
         }
       }
 
-      function showPrizeWin() {
+      function showPrizeWin(prizeName) {
         const overlay = ensureWinOverlay();
+        const prizeText = overlay.querySelector("#win-prize-text");
+        if (prizeText) prizeText.textContent = `VOCÊ GANHOU ${prizeName || "UM PRÊMIO"}`;
         launchConfetti();
         overlay.classList.add("show");
         clearTimeout(showPrizeWin._timer);
@@ -2493,7 +2594,7 @@ const CFG = {
               state.score++;
               const scoreEl = document.getElementById("score");
               if (scoreEl) scoreEl.innerText = state.score;
-              showPrizeWin();
+              showPrizeWin(p.mesh.userData.prizeName);
             }
             scene.remove(p.mesh);
             world.removeBody(p.body);
