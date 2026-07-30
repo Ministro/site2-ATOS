@@ -1,5 +1,5 @@
 import https from "https";
-import { limparCpf, supabase } from "./_supabase.js";
+import { limparCpf, supabase } from "../lib/_supabase.js";
 
 const insecureAgent = new https.Agent({ rejectUnauthorized: false });
 

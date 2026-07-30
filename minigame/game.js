@@ -2385,7 +2385,8 @@ const CFG = {
               state.timerActive = false;
               state.timerValue = TIMER_DURATION;
               state.creditCharged = false;
-              state.currentPartidaId = null;
+              // Mantém o ID até a próxima rodada. O prêmio ainda pode estar
+              // caindo até a área de coleta depois que a garra retorna.
             }, 1000);
           } else {
             state.claw.x += (dx / d) * spd;
@@ -2636,9 +2637,17 @@ const CFG = {
                   body: JSON.stringify({ token: atosGameToken, partidaId })
                 }).then(async (resp) => {
                   const dados = await resp.json().catch(() => ({}));
-                  if (resp.ok && dados.ok) showPrizeWin(dados.premio, dados.token);
-                  else showPrizeWin('UM PRÊMIO — PROCURE A ATOS TELECOM');
-                }).catch(() => showPrizeWin('UM PRÊMIO — PROCURE A ATOS TELECOM'));
+                  if (resp.ok && dados.ok && dados.premio && dados.token) {
+                    showPrizeWin(dados.premio, dados.token);
+                    state.currentPartidaId = null;
+                  } else {
+                    console.error('Falha ao resgatar prêmio:', dados);
+                    showPrizeWin('UM PRÊMIO — PROCURE A ATOS TELECOM', dados.erro || 'CONFIRME NA ATOS TELECOM');
+                  }
+                }).catch((erro) => {
+                  console.error('Falha de rede ao resgatar prêmio:', erro);
+                  showPrizeWin('UM PRÊMIO — PROCURE A ATOS TELECOM');
+                });
               } else {
                 showPrizeWin('UM PRÊMIO — PROCURE A ATOS TELECOM');
               }
