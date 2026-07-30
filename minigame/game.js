@@ -6,6 +6,7 @@ if (!atosGameToken) {
 }
 let atosCreditosCarregados = false;
 let atosCreditoPendente = false;
+let requestClawDrop = async () => false;
 fetch('/api/game-validar-sessao', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
@@ -335,8 +336,7 @@ const CFG = {
 
         const onDown = (x, y) => {
           if (panelHit(x, y, panelButtonHit)) {
-            const dropButton = document.getElementById("btn-drop");
-            if (dropButton) dropButton.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+            requestClawDrop();
             return;
           }
           if (panelHit(x, y, panelJoystickHit) || panelHit(x, y, panelJoystickBall)) {
@@ -1987,18 +1987,20 @@ const CFG = {
       }
 
       function setupInput() {
-        const onKey = async (k, v) => {
+        requestClawDrop = async () => {
+          if (state.mode !== "IDLE" || atosCreditoPendente) return false;
+          if (!(await chargeCredit())) return false;
+          state.mode = "DESCENDING";
+          state.timerActive = false;
+          moveSound.pause();
+          state.moving = false;
+          playClawEffect(clawDescendingSound);
+          return true;
+        };
+
+        const onKey = (k, v) => {
           state.keys[k] = v;
-          if (state.mode === "IDLE") {
-            if (k === "Space" && v) {
-              if (!(await chargeCredit())) return;
-              state.mode = "DESCENDING";
-              state.timerActive = false;
-              moveSound.pause();
-              state.moving = false;
-              playClawEffect(clawDescendingSound);
-            }
-          }
+          if (k === "Space" && v) requestClawDrop();
         };
         // Controles de teclado robustos. Usamos addEventListener para não serem
         // sobrescritos por outros componentes do painel/câmera.
@@ -2024,20 +2026,6 @@ const CFG = {
           ["KeyW", "KeyA", "KeyS", "KeyD", "Space"].forEach((code) => onKey(code, false));
         });
 
-        const drop = document.getElementById("btn-drop");
-        const doDrop = async (e) => {
-          if (e) e.preventDefault();
-          if (state.mode === "IDLE") {
-            if (!(await chargeCredit())) return;
-            state.mode = "DESCENDING";
-            state.timerActive = false;
-            moveSound.pause();
-            state.moving = false;
-            playClawEffect(clawDescendingSound);
-          }
-        };
-        drop.onmousedown = doDrop;
-        drop.ontouchstart = doDrop;
       }
 
       function updateGame(dt) {
@@ -2088,20 +2076,8 @@ const CFG = {
           state.moving = isMoving;
 
           if (isMoving && !state.timerActive) {
-            if (!state.creditCharged) {
-              if (!atosCreditoPendente) {
-                chargeCredit().then((ok) => {
-                  if (!ok) {
-                    state.keys = {};
-                    state.moving = false;
-                    moveSound.pause();
-                  }
-                });
-              }
-              state.moving = false;
-              moveSound.pause();
-              return;
-            }
+            // Movimentar a garra não consome crédito. O crédito é usado somente
+            // quando o jogador confirma a descida com Espaço ou no botão 3D.
             state.timerActive = true;
             state.timerValue = TIMER_DURATION;
           }
