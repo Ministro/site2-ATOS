@@ -2076,6 +2076,24 @@ const CFG = {
         };
       }
 
+      function startRoundOnFirstMovement() {
+        if (state.mode !== "IDLE" || state.creditCharged) return true;
+        if (!atosCreditosCarregados || atosCreditoPendente) return false;
+        if (state.credits <= 0) {
+          state.keys.KeyW = state.keys.KeyA = state.keys.KeyS = state.keys.KeyD = false;
+          showNoCreditsMessage();
+          return false;
+        }
+
+        // O cronômetro e o desconto começam no PRIMEIRO movimento, inclusive
+        // no joystick do celular e no joystick 3D. chargeCredit marca o crédito
+        // como consumido antes de aguardar a rede, portanto não há delay visual.
+        state.timerValue = TIMER_DURATION;
+        state.timerActive = true;
+        chargeCredit();
+        return true;
+      }
+
       function setupInput() {
         requestClawDrop = async () => {
           if (state.mode !== "IDLE") return false;
@@ -2090,17 +2108,8 @@ const CFG = {
 
         const onKey = (k, v) => {
           const isMovement = ["KeyW", "KeyA", "KeyS", "KeyD"].includes(k);
-          if (isMovement && v && state.mode === "IDLE" && !state.creditCharged) {
-            if (state.credits <= 0) {
-              state.keys[k] = false;
-              showNoCreditsMessage();
-              return;
-            }
-            state.timerActive = true;
-            state.timerValue = TIMER_DURATION;
-            chargeCredit();
-          }
           state.keys[k] = v;
+          if (isMovement && v) startRoundOnFirstMovement();
           if (k === "Space" && v) requestClawDrop();
         };
         // Controles de teclado robustos. Usamos addEventListener para não serem
@@ -2176,9 +2185,8 @@ const CFG = {
           }
           state.moving = isMoving;
 
-          if (isMoving && !state.timerActive && state.creditCharged) {
-            state.timerActive = true;
-            state.timerValue = TIMER_DURATION;
+          if (isMoving && !state.creditCharged) {
+            startRoundOnFirstMovement();
           }
 
           const oldX = state.claw.x;
