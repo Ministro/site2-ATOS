@@ -1,5 +1,6 @@
 import alterarCreditos from '../lib/admin/admin-alterar-creditos.js';
 import clientes from '../lib/admin/admin-clientes.js';
+import criarCliente from '../lib/admin/admin-criar-cliente.js';
 import historico from '../lib/admin/admin-historico.js';
 import login from '../lib/admin/admin-login.js';
 import premios from '../lib/admin/admin-premios.js';
@@ -8,6 +9,7 @@ import validar from '../lib/admin/admin-validar.js';
 const rotas = {
   'alterar-creditos': alterarCreditos,
   clientes,
+  'criar-cliente': criarCliente,
   historico,
   login,
   premios,

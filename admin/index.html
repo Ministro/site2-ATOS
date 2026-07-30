@@ -26,12 +26,12 @@
   </section>
 
   <main id="appView" hidden>
-    <div class="top"><div class="brand"><h1>Painel Administrativo</h1><p>Créditos, prêmios e configuração da máquina <strong>— V14 API GAME CORRIGIDA</strong></p></div><button id="sair" class="btn secondary">Sair</button></div>
+    <div class="top"><div class="brand"><h1>Painel Administrativo</h1><p>Créditos, prêmios e configuração da máquina <strong>— V15 CADASTRO DE CLIENTES</strong></p></div><button id="sair" class="btn secondary">Sair</button></div>
     <div class="tabs"><button class="tab active" data-tab="clientes">Clientes</button><button class="tab" data-tab="premios">Prêmios</button><button class="tab" data-tab="config">Configurar garra</button></div>
 
     <section id="clientes" class="section active">
       <div class="grid" id="metrics"></div>
-      <div class="card"><div class="toolbar"><input id="busca" class="search" placeholder="Buscar por nome ou CPF"><button id="buscar" class="btn">Buscar</button><button id="atualizar" class="btn secondary">Atualizar</button></div></div>
+      <div class="card"><div class="toolbar"><button id="novoCliente" class="btn">Novo cliente</button><input id="busca" class="search" placeholder="Buscar por nome ou CPF"><button id="buscar" class="btn">Buscar</button><button id="atualizar" class="btn secondary">Atualizar</button></div></div>
       <div class="card table-wrap"><table class="table"><thead><tr><th>Cliente</th><th>CPF</th><th>Créditos</th><th>Atualizado</th><th>Ações</th></tr></thead><tbody id="tbody"></tbody></table><div id="listaMsg" class="notice"></div></div>
     </section>
 
@@ -46,6 +46,8 @@
     <section id="config" class="section"><div class="card"><p class="muted">Este configurador só aparece dentro do painel administrativo. No jogo público, o menu fica escondido.</p><iframe id="gameFrame" title="Configuração da máquina"></iframe></div></section>
   </main>
 </div>
+
+<div id="clienteModal" class="modal"><div class="modal-box"><h2>Cadastrar cliente</h2><p class="muted">O cliente poderá consultar e utilizar os créditos pelo CPF cadastrado.</p><div class="field"><label for="clienteNome">Nome completo</label><input id="clienteNome" maxlength="120" placeholder="Nome do cliente"></div><div class="field"><label for="clienteCpf">CPF</label><input id="clienteCpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00"></div><div class="field"><label for="clienteCreditos">Créditos iniciais</label><input id="clienteCreditos" type="number" min="0" max="100000" step="1" value="0"></div><div class="toolbar"><button id="salvarCliente" class="btn">Cadastrar</button><button id="fecharCliente" class="btn secondary">Fechar</button></div><div id="clienteModalMsg" class="notice"></div></div></div>
 
 <div id="modal" class="modal"><div class="modal-box"><h2 id="modalTitulo">Alterar créditos</h2><p id="modalCliente" class="muted"></p><div class="field"><label>Operação</label><select id="modo"><option value="adicionar">Adicionar</option><option value="remover">Remover</option><option value="definir">Definir saldo exato</option></select></div><div class="field"><label>Quantidade</label><input id="valor" type="number" min="0" step="1" value="1"></div><div class="toolbar"><button id="salvar" class="btn">Salvar</button><button id="historico" class="btn secondary">Ver histórico</button><button id="fechar" class="btn secondary">Fechar</button></div><div id="modalMsg" class="notice"></div><div id="histBox"></div></div></div>
 <div id="premioModal" class="modal"><div class="modal-box"><h2>Cadastro de prêmio</h2><input id="premioId" type="hidden"><div class="field"><label>Nome</label><input id="premioNome" maxlength="100" placeholder="Ex.: PIX R$ 30,00"></div><div class="field"><label>Quantidade em estoque</label><input id="premioQuantidade" type="number" min="0" step="1" value="0"></div><div class="field"><label><input id="premioAtivo" type="checkbox" checked> Ativo no sorteio</label></div><div class="toolbar"><button id="salvarPremio" class="btn">Salvar</button><button id="fecharPremio" class="btn secondary">Fechar</button></div><div id="premioModalMsg" class="notice"></div></div></div>
@@ -66,6 +68,43 @@ $('#fechar').onclick=()=>$('#modal').classList.remove('open');$('#modal').onclic
 $('#salvar').onclick=async()=>{const m=$('#modalMsg');m.textContent='Salvando...';try{const d=await api('/api/admin?acao=alterar-creditos',{method:'POST',body:JSON.stringify({cpf:atual.cpf,modo:$('#modo').value,valor:Number($('#valor').value)})});m.className='notice ok';m.textContent=`Saldo atualizado: ${d.creditos} crédito(s).`;await carregar();atual.saldo=d.creditos;$('#modalCliente').textContent=`${atual.nome} — ${cpfFmt(atual.cpf)} — saldo atual: ${d.creditos}`}catch(e){m.className='notice err';m.textContent=e.message}};
 $('#historico').onclick=async()=>{const box=$('#histBox');box.innerHTML='<p>Carregando histórico...</p>';try{const d=await api('/api/admin?acao=historico&cpf='+atual.cpf);box.innerHTML='<h3>Histórico</h3>'+(d.itens.length?d.itens.map(i=>`<p><b>${esc(i.tipo)}</b> — ${Number(i.quantidade)>0?'+':''}${i.quantidade} — saldo ${i.saldo_apos} <span class="muted">${i.criado_em?new Date(i.criado_em).toLocaleString('pt-BR'):''}</span></p>`).join(''):'<p class="muted">Sem registros.</p>')}catch(e){box.innerHTML='<p class="err">'+esc(e.message)+'</p>'}};
 $('#buscar').onclick=carregar;$('#atualizar').onclick=carregar;$('#busca').addEventListener('keydown',e=>{if(e.key==='Enter')carregar()});
+
+
+function abrirCliente(){
+  $('#clienteNome').value='';
+  $('#clienteCpf').value='';
+  $('#clienteCreditos').value='0';
+  $('#clienteModalMsg').className='notice';
+  $('#clienteModalMsg').textContent='';
+  $('#clienteModal').classList.add('open');
+  setTimeout(()=>$('#clienteNome').focus(),50);
+}
+function fecharCliente(){ $('#clienteModal').classList.remove('open'); }
+$('#novoCliente').onclick=abrirCliente;
+$('#fecharCliente').onclick=fecharCliente;
+$('#clienteModal').onclick=e=>{if(e.target===$('#clienteModal'))fecharCliente()};
+$('#clienteCpf').addEventListener('input',e=>{
+  let v=e.target.value.replace(/\D/g,'').slice(0,11);
+  v=v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  e.target.value=v;
+});
+$('#salvarCliente').onclick=async()=>{
+  const m=$('#clienteModalMsg');
+  m.className='notice';m.textContent='Cadastrando...';
+  try{
+    const d=await api('/api/admin?acao=criar-cliente',{method:'POST',body:JSON.stringify({
+      nome:$('#clienteNome').value,
+      cpf:$('#clienteCpf').value,
+      creditos:Number($('#clienteCreditos').value||0)
+    })});
+    m.className='notice ok';
+    m.textContent=`Cliente ${d.cliente.nome} cadastrado com ${Number(d.cliente.creditos||0)} crédito(s).`;
+    $('#busca').value=d.cliente.cpf;
+    await carregar();
+    setTimeout(fecharCliente,700);
+  }catch(e){m.className='notice err';m.textContent=e.message}
+};
+$('#clienteCreditos').addEventListener('keydown',e=>{if(e.key==='Enter')$('#salvarCliente').click()});
 
 async function carregarPremios(){const m=$('#premiosMsg');m.textContent='Carregando...';try{const d=await api('/api/admin?acao=premios');$('#premiosTbody').innerHTML=d.premios.map(p=>`<tr><td>${esc(p.nome)}</td><td class="saldo">${Number(p.quantidade||0)}</td><td>${p.ativo?'Ativo':'Inativo'}</td><td>${p.atualizado_em?new Date(p.atualizado_em).toLocaleString('pt-BR'):'-'}</td><td><button class="editar-premio" data-id="${p.id}" data-nome="${esc(p.nome)}" data-qtd="${Number(p.quantidade||0)}" data-ativo="${p.ativo?'1':'0'}">Editar</button></td></tr>`).join('');document.querySelectorAll('.editar-premio').forEach(b=>b.onclick=()=>abrirPremio(b.dataset));$('#ganhosTbody').innerHTML=d.ganhos.map(g=>`<tr><td>${cpfFmt(g.cpf)}</td><td>${esc(g.premio_nome)}</td><td><code>${esc(g.token_codigo||'-')}</code></td><td>${g.criado_em?new Date(g.criado_em).toLocaleString('pt-BR'):'-'}</td><td>${g.status==='entregue'?'<b class="ok">Entregue</b>':g.status==='cancelado'?'<b class="err">Cancelado</b>':`<button class="usar-token" data-token="${esc(g.token_codigo||'')}">Confirmar</button>`}</td></tr>`).join('');document.querySelectorAll('.usar-token').forEach(b=>b.onclick=()=>{ $('#tokenBusca').value=b.dataset.token; $('#confirmarToken').click(); });m.textContent=''}catch(e){m.className='notice err';m.textContent=e.message}}
 
