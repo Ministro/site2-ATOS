@@ -161,14 +161,25 @@ export default async function handler(req, res) {
       return res.status(404).json({ erro: "Cliente não encontrado no IXC", pago: true });
     }
 
-    const credito = await creditarPagamento({ fatura, cliente });
+    // A confirmação visual não pode falhar só porque houve algum problema no Supabase.
+    // A sincronização automática independente também tentará creditar essa fatura.
+    let credito = { creditado: false, duplicado: false, creditosGerados: 0, saldo: null };
+    let creditoErro = null;
+    try {
+      credito = await creditarPagamento({ fatura, cliente });
+    } catch (erroCredito) {
+      creditoErro = erroCredito.message;
+      console.error("Pagamento confirmado, mas crédito pendente:", erroCredito);
+    }
 
     return res.status(200).json({
       pago: true,
       status,
       faturaId: String(fatura.id),
       valorPago: valorPago(fatura),
-      ...credito
+      ...credito,
+      creditoPendente: Boolean(creditoErro),
+      creditoErro
     });
   } catch (e) {
     console.error("Verificar pagamento e creditar:", e);
