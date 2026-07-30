@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050505" />
+  <title>Mini Game | Atos Telecom</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(circle at 50% 35%, rgba(255,216,0,.14), transparent 34%), linear-gradient(145deg,#101510 0%,#050505 55%,#000 100%);
+    }
+    .launcher { width:min(620px,100%); padding:clamp(28px,6vw,54px); text-align:center; border:1px solid rgba(255,216,0,.45); border-radius:24px; background:rgba(6,6,6,.92); box-shadow:0 30px 80px rgba(0,0,0,.65); }
+    .logo { width:96px; height:96px; margin:0 auto 20px; display:grid; place-items:center; border:3px solid #ffd800; border-radius:50%; color:#ffd800; font-size:62px; font-weight:900; }
+    h1 { margin:0 0 10px; font-size:clamp(28px,6vw,48px); }
+    p { margin:0 auto 24px; max-width:480px; color:#d6d6d6; font-size:16px; line-height:1.5; }
+    label { display:block; margin:0 auto 8px; max-width:390px; text-align:left; font-weight:700; }
+    input { width:min(390px,100%); padding:15px 17px; border:1px solid #555; border-radius:12px; background:#111; color:#fff; font-size:20px; text-align:center; letter-spacing:1px; outline:none; }
+    input:focus { border-color:#ffd800; box-shadow:0 0 0 3px rgba(255,216,0,.17); }
+    button { min-width:210px; padding:16px 32px; border:0; border-radius:999px; background:#ffd800; color:#050505; font-size:19px; font-weight:900; cursor:pointer; transition:transform .2s ease,filter .2s ease; }
+    button:hover:not(:disabled) { transform:translateY(-2px); filter:brightness(1.08); }
+    button:disabled { opacity:.55; cursor:not-allowed; }
+    .actions { margin-top:18px; }
+    .status { min-height:52px; margin:18px auto 0; max-width:430px; padding:12px 14px; border-radius:12px; color:#ddd; line-height:1.45; }
+    .status.ok { color:#fff; background:rgba(53,159,72,.18); border:1px solid rgba(83,218,104,.45); }
+    .status.error { color:#ffd6d6; background:rgba(190,45,45,.18); border:1px solid rgba(255,90,90,.4); }
+    .saldo { color:#ffd800; font-size:26px; font-weight:900; }
+    .hidden { display:none; }
+    .back { display:inline-block; margin-top:20px; color:#d8d8d8; text-decoration:none; }
+    .back:hover { color:#ffd800; }
+  </style>
+</head>
+<body>
+  <main class="launcher">
+    <div class="logo" aria-hidden="true">@</div>
+    <h1>Mini Game Atos Telecom</h1>
+    <p>Informe o CPF usado no cadastro para consultar seus créditos de jogo.</p>
+
+    <section id="consultaArea">
+      <label for="cpf">CPF</label>
+      <input id="cpf" inputmode="numeric" autocomplete="off" maxlength="14" placeholder="000.000.000-00" />
+      <div class="actions"><button type="button" id="consultar">CONSULTAR CRÉDITOS</button></div>
+    </section>
+
+    <section id="jogarArea" class="hidden">
+      <div id="saldoTexto" class="status ok"></div>
+      <div class="actions"><button type="button" id="playGame">JOGAR AGORA</button></div>
+      <div class="actions"><button type="button" id="trocarCpf" style="background:#222;color:#fff;border:1px solid #555;font-size:15px;min-width:160px;padding:11px 22px;">USAR OUTRO CPF</button></div>
+    </section>
+
+    <div id="status" class="status" aria-live="polite"></div>
+    <a class="back" href="index.html">Voltar ao site</a>
+  </main>
+
+  <script>
+    const cpfInput = document.getElementById('cpf');
+    const consultarBtn = document.getElementById('consultar');
+    const playBtn = document.getElementById('playGame');
+    const trocarBtn = document.getElementById('trocarCpf');
+    const consultaArea = document.getElementById('consultaArea');
+    const jogarArea = document.getElementById('jogarArea');
+    const saldoTexto = document.getElementById('saldoTexto');
+    const statusBox = document.getElementById('status');
+    let cpfAtual = '';
+
+    function limparCpf(v) { return String(v || '').replace(/\D/g, ''); }
+    function formatarCpf(v) {
+      const n = limparCpf(v).slice(0, 11);
+      return n.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    }
+    function mensagem(texto, tipo = '') {
+      statusBox.textContent = texto;
+      statusBox.className = `status ${tipo}`.trim();
+    }
+    function carregando(botao, ativo, textoNormal) {
+      botao.disabled = ativo;
+      botao.textContent = ativo ? 'AGUARDE...' : textoNormal;
+    }
+
+    cpfInput.addEventListener('input', () => { cpfInput.value = formatarCpf(cpfInput.value); });
+    cpfInput.addEventListener('keydown', e => { if (e.key === 'Enter') consultarBtn.click(); });
+
+    consultarBtn.addEventListener('click', async () => {
+      const cpf = limparCpf(cpfInput.value);
+      if (cpf.length !== 11) return mensagem('Digite um CPF completo.', 'error');
+      carregando(consultarBtn, true, 'CONSULTAR CRÉDITOS');
+      mensagem('Consultando seus créditos...');
+      try {
+        const resp = await fetch('/api/game-consultar-creditos', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ cpf })
+        });
+        const dados = await resp.json();
+        if (!resp.ok) throw new Error(dados.erro || 'Não foi possível consultar');
+        cpfAtual = cpf;
+        consultaArea.classList.add('hidden');
+        jogarArea.classList.remove('hidden');
+        saldoTexto.innerHTML = `${dados.nome ? `<strong>${dados.nome}</strong><br>` : ''}Você possui <span class="saldo">${dados.creditos}</span> crédito${dados.creditos === 1 ? '' : 's'}.`;
+        playBtn.disabled = dados.creditos < 1;
+        playBtn.textContent = dados.creditos > 0 ? 'JOGAR AGORA' : 'SEM CRÉDITOS';
+        mensagem(dados.creditos > 0 ? 'Cada partida utiliza 1 crédito.' : 'Você não possui créditos disponíveis no momento.', dados.creditos > 0 ? '' : 'error');
+      } catch (e) {
+        mensagem(e.message, 'error');
+      } finally {
+        carregando(consultarBtn, false, 'CONSULTAR CRÉDITOS');
+      }
+    });
+
+    trocarBtn.addEventListener('click', () => {
+      cpfAtual = '';
+      cpfInput.value = '';
+      consultaArea.classList.remove('hidden');
+      jogarArea.classList.add('hidden');
+      mensagem('');
+      cpfInput.focus();
+    });
+
+    playBtn.addEventListener('click', async () => {
+      if (!cpfAtual) return;
+      carregando(playBtn, true, 'JOGAR AGORA');
+      mensagem('Liberando sua partida...');
+      try {
+        const resp = await fetch('/api/game-iniciar-partida', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ cpf: cpfAtual })
+        });
+        const dados = await resp.json();
+        if (!resp.ok || !dados.autorizado) throw new Error(dados.erro || 'Partida não autorizada');
+        sessionStorage.setItem('atosGameToken', dados.token);
+        window.location.href = 'minigame/index.html';
+      } catch (e) {
+        mensagem(e.message, 'error');
+        carregando(playBtn, false, 'JOGAR AGORA');
+      }
+    });
+  </script>
+</body>
+</html>
