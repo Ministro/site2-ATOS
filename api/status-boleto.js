@@ -77,7 +77,7 @@ async function creditarPagamento({ fatura, cliente }) {
     body: JSON.stringify({
       p_cpf: cpf,
       p_nome: nome,
-      p_fatura_id: Number(fatura.id),
+      p_fatura_id: String(fatura.id),
       p_valor: valor,
       p_creditos: creditos
     })

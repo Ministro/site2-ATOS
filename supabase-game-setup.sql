@@ -127,3 +127,6 @@ revoke all on function public.game_creditar_pagamento(varchar, varchar, text, nu
   from public, anon, authenticated;
 grant execute on function public.game_creditar_pagamento(varchar, varchar, text, numeric, text)
   to service_role;
+
+-- IMPORTANTE: para a sincronização otimizada e os logs, execute também:
+-- supabase-melhoria-sincronizacao.sql

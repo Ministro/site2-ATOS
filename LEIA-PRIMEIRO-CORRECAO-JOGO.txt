@@ -1,0 +1,15 @@
+CORREÇÃO DO CRÉDITO DO JOGO
+
+Problema corrigido:
+O Supabase instalado retorna game_iniciar_partida como um número (saldo restante),
+mas a API esperava um objeto com os campos autorizado e creditos_restantes.
+
+Por isso o banco descontava 1 crédito corretamente, porém a API entendia a resposta
+como falha, mostrava 0 no painel e bloqueava o movimento da garra.
+
+Esta versão aceita os dois formatos da função do Supabase:
+- número: 2, 1, 0 ou -1;
+- objeto: { autorizado, creditos_restantes }.
+
+Não é necessário executar outro SQL para esta correção.
+Publique este ZIP na Vercel e faça um Redeploy.
