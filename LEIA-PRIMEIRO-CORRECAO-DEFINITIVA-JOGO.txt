@@ -1,9 +1,0 @@
-CORREÇÃO DO JOGO
-
-- Movimentar a garra não desconta crédito.
-- O crédito é descontado somente quando a garra começa a descer.
-- O desconto não depende mais da função RPC antiga do Supabase.
-- O botão SOLTAR do canto da tela foi removido.
-- Para soltar, use a tecla Espaço ou o botão físico 3D do painel da máquina.
-- Não é necessário executar SQL novo.
-- O EasyCron e a sincronização de pagamentos continuam iguais.
