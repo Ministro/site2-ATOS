@@ -1923,15 +1923,31 @@ const CFG = {
         }
       }
 
-      function setupSettings() {
+      async function setupSettings() {
         const panel = document.getElementById("settings-panel");
         const overlay = document.getElementById("settings-overlay");
+        const hamburger = document.getElementById("hamburger");
+        panel.style.display = "none";
+        overlay.style.display = "none";
+        hamburger.style.display = "none";
+
+        const adminMode = new URLSearchParams(location.search).get("admin") === "1";
+        const adminToken = sessionStorage.getItem("atos_admin_token") || "";
+        if (!adminMode || !adminToken) return;
+        try {
+          const resp = await fetch("/api/admin-validar", {
+            headers: { Authorization: `Bearer ${adminToken}` }
+          });
+          if (!resp.ok) return;
+        } catch (_) { return; }
+        hamburger.style.display = "block";
+
         const toggleMenu = () => {
           const isOpen = panel.style.display === "flex";
           panel.style.display = isOpen ? "none" : "flex";
           overlay.style.display = isOpen ? "none" : "block";
         };
-        document.getElementById("hamburger").onclick = toggleMenu;
+        hamburger.onclick = toggleMenu;
         overlay.onclick = toggleMenu;
         window.addEventListener("keydown", (e) => {
           if (e.key === "Escape" && panel.style.display === "flex")
