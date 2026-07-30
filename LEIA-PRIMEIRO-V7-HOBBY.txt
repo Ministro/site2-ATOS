@@ -1,8 +1,0 @@
-VERSÃO V7 — COMPATÍVEL COM VERCEL HOBBY
-
-A Vercel Hobby aceita no máximo 12 funções por deployment.
-Esta versão agrupou as rotas administrativas em /api/admin e as rotas do jogo em /api/game.
-O projeto agora possui somente 7 funções públicas, sem perder recursos.
-
-Envie todos os arquivos ao GitHub substituindo os anteriores e aguarde o deploy automático.
-Não precisa mudar EasyCron, Supabase ou variáveis de ambiente.
