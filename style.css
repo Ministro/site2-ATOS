@@ -1,9 +1,3 @@
-@font-face {
-  font-family: "SamsungSharp";
-  src: url("fonts/samsungsharpsans-bold.otf") format("opentype");
-  font-weight: 700;
-  font-style: normal;
-}
 /* ============ PRELOADER ============ */
 .preloader {
   position: fixed;
