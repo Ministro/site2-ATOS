@@ -213,16 +213,15 @@ export default async function handler(req, res) {
     };
 
     await registrarLogSeguro({
-      inicio_em: inicioExecucao.toISOString(),
-      fim_em: new Date().toISOString(),
-      datas_consultadas: [data],
+      iniciado_em: inicioExecucao.toISOString(),
+      finalizado_em: new Date().toISOString(),
+      periodo_inicio: `${data}T00:00:00-04:00`,
+      periodo_fim: `${data}T23:59:59-04:00`,
       encontradas: resumo.encontradas,
       novas: resumo.creditadas,
       creditadas: resumo.creditadas,
       duplicadas: resumo.duplicadas,
-      sem_creditos: resumo.semCreditos,
       erros: resumo.erros,
-      sucesso: resumo.erros === 0,
       detalhes
     });
 
