@@ -2564,7 +2564,12 @@ const CFG = {
             <div class="win-small">ATOS TELECOM</div>
             <h2>PARABÉNS!</h2>
             <p id="win-prize-text">VOCÊ GANHOU UM PRÊMIO!</p>
+            <p id="win-instruction">TIRE UM PRINT OU FOTO DESTA TELA PARA REIVINDICAR SEU PRÊMIO.</p>
+            <div id="win-token-label">TOKEN DO PRÊMIO</div>
+            <div id="win-token">AGUARDE...</div>
+            <button id="win-close" type="button">FECHAR</button>
           </div>`;
+        overlay.querySelector("#win-close")?.addEventListener("click", () => overlay.classList.remove("show"));
         document.body.appendChild(overlay);
         return overlay;
       }
@@ -2585,14 +2590,16 @@ const CFG = {
         }
       }
 
-      function showPrizeWin(prizeName) {
+      function showPrizeWin(prizeName, token) {
         const overlay = ensureWinOverlay();
         const prizeText = overlay.querySelector("#win-prize-text");
         if (prizeText) prizeText.textContent = `VOCÊ GANHOU ${prizeName || "UM PRÊMIO"}`;
+        const tokenText = overlay.querySelector("#win-token");
+        if (tokenText) tokenText.textContent = token || "CONFIRME NA ATOS TELECOM";
         launchConfetti();
         overlay.classList.add("show");
         clearTimeout(showPrizeWin._timer);
-        showPrizeWin._timer = setTimeout(() => overlay.classList.remove("show"), 4200);
+        showPrizeWin._timer = setTimeout(() => overlay.classList.remove("show"), 30000);
       }
 
       let lastFrameTime = performance.now();
@@ -2629,7 +2636,7 @@ const CFG = {
                   body: JSON.stringify({ token: atosGameToken, partidaId })
                 }).then(async (resp) => {
                   const dados = await resp.json().catch(() => ({}));
-                  if (resp.ok && dados.ok) showPrizeWin(dados.premio);
+                  if (resp.ok && dados.ok) showPrizeWin(dados.premio, dados.token);
                   else showPrizeWin('UM PRÊMIO — PROCURE A ATOS TELECOM');
                 }).catch(() => showPrizeWin('UM PRÊMIO — PROCURE A ATOS TELECOM'));
               } else {

@@ -366,3 +366,8 @@ body {
 #no-credits-card h2 { margin: 10px 0 14px; font-size: clamp(28px,5vw,48px); color: #ffd12f; }
 #no-credits-card p { margin: 0 0 14px; font-size: clamp(17px,2.8vw,24px); line-height: 1.35; font-weight: 700; }
 #no-credits-card strong { font-size: clamp(18px,3vw,26px); }
+
+#win-card #win-instruction{margin:16px auto 8px;max-width:620px;font-size:clamp(14px,2vw,20px);font-weight:700;line-height:1.35;color:#fff}
+#win-token-label{margin-top:14px;font-size:13px;font-weight:900;letter-spacing:.15em;color:#ffd700}
+#win-token{margin:7px auto 12px;padding:12px 16px;max-width:460px;border:2px dashed #ffd700;border-radius:12px;background:#050505;color:#fff;font-family:monospace;font-size:clamp(21px,4vw,38px);font-weight:900;letter-spacing:.08em;user-select:all}
+#win-close{border:0;border-radius:10px;padding:10px 20px;background:#ffd700;color:#111;font-weight:900;cursor:pointer}

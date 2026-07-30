@@ -9,6 +9,6 @@ export default async function handler(req,res){
     const d=await supabase('rpc/game_resgatar_premio',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({p_partida_id:partidaId,p_cpf:dadosToken.cpf})});
     const r=Array.isArray(d)?d[0]:d;
     if(!r?.ok) return res.status(409).json({ok:false,erro:'Prêmio indisponível ou já resgatado'});
-    return res.status(200).json({ok:true,premio:r.premio_nome,quantidadeRestante:Number(r.quantidade_restante||0)});
+    return res.status(200).json({ok:true,premio:r.premio_nome,token:r.token_codigo,quantidadeRestante:Number(r.quantidade_restante||0)});
   }catch(e){console.error('Resgatar prêmio:',e);return res.status(500).json({ok:false,erro:'Não foi possível confirmar o prêmio'});}
 }
