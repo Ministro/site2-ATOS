@@ -1,8 +1,0 @@
-NOVA VERSÃO DO JOGO
-
-- Crédito descontado no primeiro movimento da garra, sem atraso visual.
-- Tempo reduzido para 30 segundos.
-- Brindes aleatórios apenas nas caixas pretas e medalhões com logo.
-- Brindes: 5% de desconto, 10% de desconto, PIX de R$ 30,00, chaveiro e 1 mês grátis de internet.
-- Mensagem de falta de créditos adicionada.
-- Não precisa executar SQL novo. Faça o redeploy na Vercel.
