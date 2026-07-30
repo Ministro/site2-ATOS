@@ -27,7 +27,7 @@
 
   <main id="appView" hidden>
     <div class="top"><div class="brand"><h1>Painel Administrativo</h1><p>Créditos e configuração da máquina</p></div><button id="sair" class="btn secondary">Sair</button></div>
-    <div class="tabs"><button class="tab active" data-tab="clientes">Clientes</button><button class="tab" data-tab="config">Configurar garra</button></div>
+    <div class="tabs"><button class="tab active" data-tab="clientes">Clientes</button><button class="tab" data-tab="premios">Prêmios</button><button class="tab" data-tab="config">Configurar garra</button></div>
 
     <section id="clientes" class="section active">
       <div class="grid" id="metrics"></div>
@@ -35,11 +35,19 @@
       <div class="card table-wrap"><table class="table"><thead><tr><th>Cliente</th><th>CPF</th><th>Créditos</th><th>Atualizado</th><th>Ações</th></tr></thead><tbody id="tbody"></tbody></table><div id="listaMsg" class="notice"></div></div>
     </section>
 
+
+    <section id="premios" class="section">
+      <div class="card"><div class="toolbar"><button id="novoPremio" class="btn">Novo prêmio</button><button id="atualizarPremios" class="btn secondary">Atualizar</button></div><p class="muted">O estoque diminui automaticamente quando um cliente ganha. Com quantidade zero, o prêmio não participa do sorteio.</p></div>
+      <div class="card table-wrap"><table class="table"><thead><tr><th>Prêmio</th><th>Estoque</th><th>Status</th><th>Atualizado</th><th>Ação</th></tr></thead><tbody id="premiosTbody"></tbody></table><div id="premiosMsg" class="notice"></div></div>
+      <div class="card table-wrap"><h2>Últimos ganhadores</h2><table class="table"><thead><tr><th>CPF</th><th>Prêmio</th><th>Data</th><th>Status</th></tr></thead><tbody id="ganhosTbody"></tbody></table></div>
+    </section>
+
     <section id="config" class="section"><div class="card"><p class="muted">Este configurador só aparece dentro do painel administrativo. No jogo público, o menu fica escondido.</p><iframe id="gameFrame" title="Configuração da máquina"></iframe></div></section>
   </main>
 </div>
 
 <div id="modal" class="modal"><div class="modal-box"><h2 id="modalTitulo">Alterar créditos</h2><p id="modalCliente" class="muted"></p><div class="field"><label>Operação</label><select id="modo"><option value="adicionar">Adicionar</option><option value="remover">Remover</option><option value="definir">Definir saldo exato</option></select></div><div class="field"><label>Quantidade</label><input id="valor" type="number" min="0" step="1" value="1"></div><div class="toolbar"><button id="salvar" class="btn">Salvar</button><button id="historico" class="btn secondary">Ver histórico</button><button id="fechar" class="btn secondary">Fechar</button></div><div id="modalMsg" class="notice"></div><div id="histBox"></div></div></div>
+<div id="premioModal" class="modal"><div class="modal-box"><h2>Cadastro de prêmio</h2><input id="premioId" type="hidden"><div class="field"><label>Nome</label><input id="premioNome" maxlength="100" placeholder="Ex.: PIX R$ 30,00"></div><div class="field"><label>Quantidade em estoque</label><input id="premioQuantidade" type="number" min="0" step="1" value="0"></div><div class="field"><label><input id="premioAtivo" type="checkbox" checked> Ativo no sorteio</label></div><div class="toolbar"><button id="salvarPremio" class="btn">Salvar</button><button id="fecharPremio" class="btn secondary">Fechar</button></div><div id="premioModalMsg" class="notice"></div></div></div>
 
 <script>
 const $=s=>document.querySelector(s); let token=sessionStorage.getItem('atos_admin_token')||''; let atual=null;
@@ -57,7 +65,13 @@ $('#fechar').onclick=()=>$('#modal').classList.remove('open');$('#modal').onclic
 $('#salvar').onclick=async()=>{const m=$('#modalMsg');m.textContent='Salvando...';try{const d=await api('/api/admin-alterar-creditos',{method:'POST',body:JSON.stringify({cpf:atual.cpf,modo:$('#modo').value,valor:Number($('#valor').value)})});m.className='notice ok';m.textContent=`Saldo atualizado: ${d.creditos} crédito(s).`;await carregar();atual.saldo=d.creditos;$('#modalCliente').textContent=`${atual.nome} — ${cpfFmt(atual.cpf)} — saldo atual: ${d.creditos}`}catch(e){m.className='notice err';m.textContent=e.message}};
 $('#historico').onclick=async()=>{const box=$('#histBox');box.innerHTML='<p>Carregando histórico...</p>';try{const d=await api('/api/admin-historico?cpf='+atual.cpf);box.innerHTML='<h3>Histórico</h3>'+(d.itens.length?d.itens.map(i=>`<p><b>${esc(i.tipo)}</b> — ${Number(i.quantidade)>0?'+':''}${i.quantidade} — saldo ${i.saldo_apos} <span class="muted">${i.criado_em?new Date(i.criado_em).toLocaleString('pt-BR'):''}</span></p>`).join(''):'<p class="muted">Sem registros.</p>')}catch(e){box.innerHTML='<p class="err">'+esc(e.message)+'</p>'}};
 $('#buscar').onclick=carregar;$('#atualizar').onclick=carregar;$('#busca').addEventListener('keydown',e=>{if(e.key==='Enter')carregar()});
-document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===t));document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===t.dataset.tab));if(t.dataset.tab==='config'&&!$('#gameFrame').src)$('#gameFrame').src='/minigame/index.html?admin=1'});
+
+async function carregarPremios(){const m=$('#premiosMsg');m.textContent='Carregando...';try{const d=await api('/api/admin-premios');$('#premiosTbody').innerHTML=d.premios.map(p=>`<tr><td>${esc(p.nome)}</td><td class="saldo">${Number(p.quantidade||0)}</td><td>${p.ativo?'Ativo':'Inativo'}</td><td>${p.atualizado_em?new Date(p.atualizado_em).toLocaleString('pt-BR'):'-'}</td><td><button class="editar-premio" data-id="${p.id}" data-nome="${esc(p.nome)}" data-qtd="${Number(p.quantidade||0)}" data-ativo="${p.ativo?'1':'0'}">Editar</button></td></tr>`).join('');document.querySelectorAll('.editar-premio').forEach(b=>b.onclick=()=>abrirPremio(b.dataset));$('#ganhosTbody').innerHTML=d.ganhos.map(g=>`<tr><td>${cpfFmt(g.cpf)}</td><td>${esc(g.premio_nome)}</td><td>${g.criado_em?new Date(g.criado_em).toLocaleString('pt-BR'):'-'}</td><td><select class="ganho-status" data-id="${g.id}"><option value="pendente" ${g.status==='pendente'?'selected':''}>Pendente</option><option value="entregue" ${g.status==='entregue'?'selected':''}>Entregue</option><option value="cancelado" ${g.status==='cancelado'?'selected':''}>Cancelado</option></select></td></tr>`).join('');document.querySelectorAll('.ganho-status').forEach(x=>x.onchange=()=>api('/api/admin-premios',{method:'POST',body:JSON.stringify({acao:'status_ganho',id:x.dataset.id,status:x.value})}));m.textContent=''}catch(e){m.className='notice err';m.textContent=e.message}}
+function abrirPremio(d={}){$('#premioId').value=d.id||'';$('#premioNome').value=d.nome||'';$('#premioQuantidade').value=d.qtd||0;$('#premioAtivo').checked=d.ativo!=='0';$('#premioModalMsg').textContent='';$('#premioModal').classList.add('open')}
+$('#novoPremio').onclick=()=>abrirPremio();$('#atualizarPremios').onclick=carregarPremios;$('#fecharPremio').onclick=()=>$('#premioModal').classList.remove('open');$('#premioModal').onclick=e=>{if(e.target===$('#premioModal'))$('#fecharPremio').click()};
+$('#salvarPremio').onclick=async()=>{const m=$('#premioModalMsg');m.textContent='Salvando...';try{await api('/api/admin-premios',{method:'POST',body:JSON.stringify({acao:'salvar',id:Number($('#premioId').value||0),nome:$('#premioNome').value,quantidade:Number($('#premioQuantidade').value||0),ativo:$('#premioAtivo').checked})});m.className='notice ok';m.textContent='Prêmio salvo.';await carregarPremios();setTimeout(()=>$('#fecharPremio').click(),500)}catch(e){m.className='notice err';m.textContent=e.message}};
+
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===t));document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===t.dataset.tab));if(t.dataset.tab==='premios')carregarPremios();if(t.dataset.tab==='config'&&!$('#gameFrame').src)$('#gameFrame').src='/minigame/index.html?admin=1'});
 validar();
 </script>
 </body></html>

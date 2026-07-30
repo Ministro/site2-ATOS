@@ -56,6 +56,7 @@ const CFG = {
         moving: false,
         credits: 0,
         creditCharged: false,
+        currentPartidaId: null,
       };
 
       const moveSound = new Audio(
@@ -1084,11 +1085,13 @@ const CFG = {
             return false;
           }
           state.credits = Number(dados.creditosRestantes ?? state.credits);
+          state.currentPartidaId = dados.partidaId || null;
           if (panelCreditCtx) drawPanelDisplay(panelCreditCtx, panelCreditTex, "CRÉDITOS", state.credits, state.credits <= 1);
           return true;
         } catch (e) {
           console.error('Falha ao utilizar crédito:', e);
           state.creditCharged = false;
+          state.currentPartidaId = null;
           state.credits += 1;
           state.timerActive = false;
           state.keys.KeyW = state.keys.KeyA = state.keys.KeyS = state.keys.KeyD = false;
@@ -1559,13 +1562,12 @@ const CFG = {
       }
 
 
-      const SPECIAL_PRIZES = [
-        "5% DE DESCONTO",
-        "10% DE DESCONTO",
-        "PIX DE R$ 30,00",
-        "CHAVEIRO",
-        "1 MÊS GRÁTIS DE INTERNET",
-      ];
+      let SPECIAL_PRIZES = ["PRÊMIO SURPRESA"];
+
+      fetch("/api/game-premios-disponiveis")
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(d => { if (Array.isArray(d.premios) && d.premios.length) SPECIAL_PRIZES = d.premios; })
+        .catch(() => {});
 
       function randomSpecialPrize() {
         return SPECIAL_PRIZES[Math.floor(Math.random() * SPECIAL_PRIZES.length)];
@@ -2383,6 +2385,7 @@ const CFG = {
               state.timerActive = false;
               state.timerValue = TIMER_DURATION;
               state.creditCharged = false;
+              state.currentPartidaId = null;
             }, 1000);
           } else {
             state.claw.x += (dx / d) * spd;
@@ -2618,7 +2621,20 @@ const CFG = {
               state.score++;
               const scoreEl = document.getElementById("score");
               if (scoreEl) scoreEl.innerText = state.score;
-              showPrizeWin(p.mesh.userData.prizeName);
+              const partidaId = state.currentPartidaId;
+              if (partidaId) {
+                fetch('/api/game-resgatar-premio', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ token: atosGameToken, partidaId })
+                }).then(async (resp) => {
+                  const dados = await resp.json().catch(() => ({}));
+                  if (resp.ok && dados.ok) showPrizeWin(dados.premio);
+                  else showPrizeWin('UM PRÊMIO — PROCURE A ATOS TELECOM');
+                }).catch(() => showPrizeWin('UM PRÊMIO — PROCURE A ATOS TELECOM'));
+              } else {
+                showPrizeWin('UM PRÊMIO — PROCURE A ATOS TELECOM');
+              }
             }
             scene.remove(p.mesh);
             world.removeBody(p.body);
